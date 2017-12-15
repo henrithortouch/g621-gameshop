@@ -20,7 +20,7 @@ We’ll be using git flow as a work model. In Git Flow a master branch is used a
 #### Time schedule
 Work will be started in the beginning of the third period. We’ll be working together twice a week for two hours each working session. These sessions focus on teamwork and supporting each other and ensuring project flow. In addition group members will be working independently on their own time. We’re looking get the basic structure of the project done within a week or two to allow for easy addition of features.
 
-###T esting
+### Testing
 To ensure the quality and robustness of the code, Test Driven Development (TDD) will be used. In practice this means that including passing tests should be a requirement for a pull request to be accepted.
 
 Since the group as no prior experience of javascript testing, we've decided to look into Karma and Mocha.js for our testing framework. Back-end will be tested with normal Django tests, using standard Python libraries.
