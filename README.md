@@ -1,4 +1,4 @@
-# WSD TEAM Carry Hansen Project Plan
+# WSD TEAM Carry Hansen Project Plan.
  
 ### Team
 * Hansen Feng **525093**
