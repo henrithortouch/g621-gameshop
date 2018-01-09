@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.template import loader
 
+# Täällä on sit täbei
 def about(request):
 	return HttpResponse("about page")
 
@@ -12,4 +13,6 @@ def home(request):
 	output = template.render(context)
 	return HttpResponse(output)
 	
+def login(request):
+	return render(request, "gameshop/login.html", {})
 # Create your views here.
