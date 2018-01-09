@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load staticfiles %}
 <html>
   <head>
     <title>Home page</title>
@@ -11,10 +12,12 @@
   </div>
   <div id="main">
     <p>Filler text for main, this is not important<p>
-    <button type="button">Pet me!</button>
+    <button type="button" onclick="showChocola()">Pet me!</button>
   </div>
+  <img id="Chocola" src="{% static "gameshop/chocola.png" %}" style="display: none"; />
   <div id="footer">
     <p>Do we even need a footer?<p>
   </div>
+  <script type="text/javascript" src="{% static 'gameshop/home.js' %}"></script>
   </body>
 </html>
