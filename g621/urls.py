@@ -21,6 +21,6 @@ from gameshop.views import about, home
 
 urlpatterns = [
     url('admin/', admin.site.urls),
-    url(r'^about/$', about),
     url(r'^$', home),
+    url(r'^about/$', about),
 ]

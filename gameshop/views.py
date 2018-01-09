@@ -6,7 +6,9 @@ def about(request):
 	return HttpResponse("about page")
 
 def home(request):
+	#return render(request, "gameshop/home.html", {}, content_type = 'text/html')
 	template = loader.get_template("gameshop/home.html")
+	context = {}
 	output = template.render(context)
 	return HttpResponse(output)
 	
