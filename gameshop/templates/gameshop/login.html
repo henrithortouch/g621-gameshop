@@ -7,8 +7,35 @@
   <body>
     <h1>Welcome to G621</h1>
     <div id="login_div" />
-    <p id="form">
-    	Joo
-    </p>
+   <form action="http://127.0.0.1/wsd/html_form_check" method="post">
+            <p>
+                <label for="email">Email:</label>
+                <input type="text" name="email" id="email">
+            </p>
+            <p>
+                <label for="passwd">Password:</label>
+                <input type="password" name="passwd" id="passwd">
+            </p>
+            <p>
+                <label for="passwd2">Repeat password:</label>
+                <input type="password" name="passwd2" id="passwd2">
+            </p>
+            <p>
+                <label for="lang">gender:</label>
+                <select name="lang" id="lang">
+                    <option value="fi">male</option>
+                    <option value="sv">female</option>
+                    <option value="no">attack helicopter</option>
+                    <option value="da">other</option>
+                    <option value="is">pokemon</option>
+                </select>
+            </p>
+            <p>
+                <input type="checkbox" name="terms" id="terms" value="on">
+                <label for="terms">I accept terms and conditions</label>
+            </p>
+            <button>Register</button>
+            
+        </form>
   </body>
 </html>
