@@ -2,9 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.template import loader
 
-# Täällä on sit täbei
+
 def about(request):
-	return HttpResponse("about page")
+    return HttpResponse("about page")
 
 def home(request):
 	#return render(request, "gameshop/home.html", {}, content_type = 'text/html')
@@ -19,3 +19,6 @@ def login(request):
 
 def gamescreen(request):
     return render(request, "gameshop/game.html", {})
+
+def inventory(request):
+    return render(request, "gameshop/inventory.html")

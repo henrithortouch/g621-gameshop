@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 "from django.urls import path"
 from django.conf.urls import url
-from gameshop.views import about, home, login, gamescreen
+from gameshop.views import about, home, login, gamescreen, inventory
 
 urlpatterns = [
     url('admin/', admin.site.urls),
@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^about/$', about),
     url(r'^login/$', login),
     url(r'^gamescreen/$', gamescreen),
-]
+    url(r'^inventory/$', inventory),
+    ]
