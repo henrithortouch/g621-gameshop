@@ -1,3 +1,5 @@
 from django.test import TestCase
 
-# Create your tests here.
+class SanityCheckTests(TestCase):
+    def test_is_true(self):
+        self.assertIs(True, True)
