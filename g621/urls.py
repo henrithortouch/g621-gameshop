@@ -17,11 +17,14 @@ Including another URLconf
 from django.contrib import admin
 "from django.urls import path"
 from django.conf.urls import url
-from gameshop.views import about, home, register
+from gameshop.views import about, home, login, gamescreen, inventory, register
 
 urlpatterns = [
     url('admin/', admin.site.urls),
     url(r'^$', home),
     url(r'^about/$', about),
     url(r'^register/$', register),
-]
+    url(r'^login/$', login),
+    url(r'^gamescreen/$', gamescreen),
+    url(r'^inventory/$', inventory),
+    ]
