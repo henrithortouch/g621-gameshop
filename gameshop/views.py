@@ -18,7 +18,7 @@ def login(request):
 # Create your views here.
 
 def gamescreen(request):
-    return render(request, "gameshop/game.html", {})
+    return render(request, "gameshop/gamescreen.html", {})
 
 def inventory(request):
     return render(request, "gameshop/inventory.html")
