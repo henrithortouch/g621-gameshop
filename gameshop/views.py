@@ -9,7 +9,6 @@ def about(request):
     return HttpResponse("about page")
 
 def home(request):
-<<<<<<< HEAD
     #return render(request, "gameshop/home.html", {}, content_type = 'text/html')
     template = loader.get_template("gameshop/home.html")
     context = {}
@@ -29,16 +28,9 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, "gameshop/register.html", {"form": form})
-=======
-	#return render(request, "gameshop/home.html", {}, content_type = 'text/html')
-	template = loader.get_template("gameshop/home.html")
-	context = {}
-	output = template.render(context)
-	return HttpResponse(output)
 
 def login(request):
 	return render(request, "gameshop/login.html", {})
->>>>>>> ab028ce879c050120c592c4011d7998ba3b3772e
 # Create your views here.
 
 def gamescreen(request):
