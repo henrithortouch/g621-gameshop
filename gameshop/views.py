@@ -12,7 +12,10 @@ def home(request):
 	context = {}
 	output = template.render(context)
 	return HttpResponse(output)
-	
+
 def login(request):
 	return render(request, "gameshop/login.html", {})
 # Create your views here.
+
+def gamescreen(request):
+    return render(request, "gameshop/game.html", {})
