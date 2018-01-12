@@ -1,6 +1,8 @@
-from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.template import loader
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
 
 
 def about(request):
@@ -12,9 +14,27 @@ def home(request):
     context = {}
     output = template.render(context)
     return HttpResponse(output)
-	
+
+def register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            #form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            #user = authenticate(username=username, password=raw_password)
+            #login(request, user)
+            return redirect('/')
+    else:
+        form = UserCreationForm()
+    return render(request, "gameshop/register.html", {"form": form})
+
 def login(request):
-    return render(request, "gameshop/login.html", {})
+	return render(request, "gameshop/login.html", {})
+# Create your views here.
+
+def gamescreen(request):
+    return render(request, "gameshop/game.html", {})
 
 def inventory(request):
     return render(request, "gameshop/inventory.html")

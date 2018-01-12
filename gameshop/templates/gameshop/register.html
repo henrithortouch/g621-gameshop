@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Register Account</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <h1>Welcome to G621</h1>
+    <h4>Register your free G621 account</h4>
+    <div id="login_div" />
+        <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register Account</button>
+        </form>
+  </body>
+</html>
