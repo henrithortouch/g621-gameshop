@@ -2,7 +2,7 @@
 {% load staticfiles %}
 <html>
 <head>
-    <script src="lib/jquery-3.2.1.min.js"></script>
+    <script src="{% static "lib/jquery-3.2.1.min.js" %}" ></script>
     <script type="text/javascript">
         $(document).ready(function() {
             "use strict";
@@ -11,10 +11,13 @@
             window.addEventListener("message", function(evt) {
                 if(evt.data.messageType === "LOAD_REQUEST") {
                     // Load game here
+                    console.log("LOAD")
                 } else if(evt.data.messageType === "SAVE") {
                     // Saves game to db
+                    console.log("SAVE")
                 } else if(evt.data.messageType === "SCORE") {
                     // Saves score to highscores
+                    console.log("SCORE")
                 }
             });
 
