@@ -1,6 +1,7 @@
 from django.http import HttpResponse, Http404
 from django.template import loader, Context
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
@@ -14,6 +15,10 @@ def home(request):
     template = loader.get_template("gameshop/home.html")
     context = {}
     output = template.render(context)
+    users = User.objects.all()
+    for user in users:
+        print(user.username)
+        print(user.is_authenticated)
     return HttpResponse(output)
 
 def register(request):

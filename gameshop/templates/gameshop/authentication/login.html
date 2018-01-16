@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <ul>
+        <a href="/">Home</a>
+        <a href="/games">Browse games</a>
+        <a href="/login">login</a>
+        <a href="/gamescreen">Game screen test</a>
+        <a href="/inventory">Inventory</a>
+    </ul>
+    {% block content %}
+    <h2>Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
+    <p>
+        <small>Don't have an account yet? <a href="/register">Register a new account</a></small>
+    </p>
+    {% endblock %}
+  </body>
+</html>
