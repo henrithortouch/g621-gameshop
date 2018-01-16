@@ -5,13 +5,9 @@
     <meta charset="utf-8" />
   </head>
   <body>
-    <ul>
-        <a href="/">Home</a>
-        <a href="/games">Browse games</a>
-        <a href="/login">login</a>
-        <a href="/gamescreen">Game screen test</a>
-        <a href="/inventory">Inventory</a>
-    </ul>
+    <div id="header">
+        {% include "gameshop/header.html" %}
+    </div>
     {% block content %}
     <h2>Login</h2>
     <form method="post">
