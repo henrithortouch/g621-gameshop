@@ -19,18 +19,15 @@ def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            #form.save()
+            form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
-            #user = authenticate(username=username, password=raw_password)
-            #login(request, user)
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
             return redirect('/')
     else:
         form = UserCreationForm()
     return render(request, "gameshop/register.html", {"form": form})
-
-def login(request):
-	return render(request, "gameshop/login.html", {})
 # Create your views here.
 
 def gamescreen(request):
