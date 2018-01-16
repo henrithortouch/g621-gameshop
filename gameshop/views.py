@@ -1,9 +1,10 @@
 from django.http import HttpResponse, Http404
-from django.template import loader
+from django.template import loader, Context
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
+from gameshop.models import Game
 
 def about(request):
     return HttpResponse("about page")
@@ -34,4 +35,7 @@ def gamescreen(request):
     return render(request, "gameshop/game.html", {})
 
 def inventory(request):
-    return render(request, "gameshop/inventory.html")
+    gamelist = Game.objects.all()
+    template = loader.get_template("gameshop/inventory.html")
+    context = {"gamelist": gamelist}
+    return HttpResponse(template.render(context))
