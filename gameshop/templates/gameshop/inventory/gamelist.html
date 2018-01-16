@@ -5,7 +5,9 @@
   Games in DB: {{ gamelist.count }}
 </p>
 {% for game in gamelist %}
-<ul>
-  <li>{{ game.name }}</li>
-</ul>
+<div>
+  <a>{{ game.name }}</a>
+  <p>{{ game.description }}</p>
+  <p>____</p>
+</div>
 {% endfor %}
