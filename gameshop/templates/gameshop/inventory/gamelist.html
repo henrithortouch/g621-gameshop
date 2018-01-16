@@ -1,1 +1,11 @@
-
+<p>
+    This is gamelist.html
+</p>
+{% for game in game_list %}
+<h2>
+  <a href="{{ game.name }}">
+    "LAWL TEXT"
+  </a>
+</h2>
+<p>{{ game.description }}</p>
+{% endfor %}
