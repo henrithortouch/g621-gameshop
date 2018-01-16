@@ -1,6 +1,7 @@
 from django.http import HttpResponse, Http404
 from django.template import loader
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
@@ -11,14 +12,9 @@ def about(request):
 
 def home(request):
     #return render(request, "gameshop/home.html", {}, content_type = 'text/html')
-    template = loader.get_template("gameshop/home.html")
-    context = {}
-    output = template.render(context)
-    users = User.objects.all()
-    for user in users:
-        print(user.username)
-        print(user.is_authenticated)
-    return HttpResponse(output)
+    if request.user != None:
+        print(request.user.username + " is logged in")
+    return render(request, "gameshop/home.html", {"user": request.user.username})
 
 def register(request):
     if request.method == "POST":
@@ -40,5 +36,11 @@ def gamescreen(request):
 
 def inventory(request):
     return render(request, "gameshop/inventory.html")
+    
+#@login_required(login_url='/login/')
+def logout_page(request):
+    print("Attempt to logout")
+    logout(request)
+    return render(request, "gameshop/authentication/logout_page.html")
     
 
