@@ -8,6 +8,11 @@
     {% include "gameshop/header.html" %}
   </div>
   <div id=gamelist>
+    <!--To choose between dev and user views
+        Use either a) Different inheriting ?? templates? 
+                   b) If to include different html's?
+         
+        Or just a full new view? Check at view.py which type user is?-->
     {% include "gameshop/inventory/gamelist.html" %}
   </div>
   <div id="footer">
