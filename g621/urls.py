@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^$', home),
     url(r'^about/$', about),
     url(r'^register/$', register),
-    url(r'^login/$', auth_views.login, name="login"),
+    url(r'^login/$', auth_views.login, {'template_name': 'gameshop/authentication/login.html'}),
     url(r'^gamescreen/$', gamescreen),
     url(r'^inventory/$', inventory),
     ]
