@@ -36,9 +36,8 @@ def gamescreen(request):
     return render(request, "gameshop/gamescreen.html", {})
 
 def inventory(request):
-    gamelist = Game.objects.all()
     template = loader.get_template("gameshop/inventory.html")
-    context = {"gamelist": gamelist}
+    context = {"user": request.user}
     return HttpResponse(template.render(context))
     
 #@login_required(login_url='/login/')

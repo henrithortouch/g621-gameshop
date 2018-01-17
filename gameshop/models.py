@@ -1,4 +1,7 @@
+from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 class Game(models.Model):
@@ -10,9 +13,8 @@ class Game(models.Model):
         return "\nName: " + self.name + "\n" \
             + "Description: " + self.description
 
-class User(models.Model):
-    id = models.AutoField(auto_created=True, primary_key=True)
-    user_name = models.CharField(max_length=20)
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_dev = models.BooleanField(default=False)
     games_bought = models.ManyToManyField(Game)
 
@@ -21,5 +23,14 @@ class User(models.Model):
         self.save()
 
     def __str__(self):
-        return "\nUsername: " +self.user_name + "\n" \
+        return "\nUsername: " +self.user.username + "\n" \
             + "Is dev: %s" % self.is_dev
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()

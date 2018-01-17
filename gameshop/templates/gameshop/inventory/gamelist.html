@@ -1,13 +1,17 @@
 <p>
   This is gamelist.html
 </p>
-<p>
-  Games in DB: {{ gamelist.count }}
-</p>
-{% for game in gamelist %}
-<div>
-  <a>{{ game.name }}</a>
-  <p>{{ game.description }}</p>
-  <p>____</p>
-</div>
-{% endfor %}
+{% if user %}
+  <p>
+    Your games: {{ user.profile.games_bought.count }}
+  </p>
+  {% for game in user.profile.games_bought.all %}
+  <div>
+    <a>{{ game.name }}</a>
+    <p>{{ game.description }}</p>
+    <p>____</p>
+  </div>
+  {% endfor %}
+{% else %}
+  <p>Please log in!</p>
+{% endif %}
