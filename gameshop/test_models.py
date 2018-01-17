@@ -1,6 +1,7 @@
 from django.test import TestCase
 
-from gameshop.models import Game, User
+from django.contrib.auth.models import User
+from gameshop.models import Game, Profile
 
 class GameTests(TestCase):
 
@@ -15,7 +16,7 @@ class GameTests(TestCase):
         g2.save()
         g3.save()
 
-        u = self.gen_user()
+        u = self.gen_profile()
         u.addGame(g1)
         u.addGame(g2)
 
@@ -25,7 +26,6 @@ class GameTests(TestCase):
         self.assertFalse(result.filter(name = "3"))
         self.assertEqual(result.count(), 2)
 
-    def gen_user(self):
-        u = User(user_name="")
-        u.save()
-        return u
+    def gen_profile(self):
+        user = User.objects.create_user("name", "mail", "password")
+        return user.profile
