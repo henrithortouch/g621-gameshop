@@ -1,15 +1,16 @@
-<p>
-  This is gamelist.html
-</p>
+<h1>
+  My games
+</h1>
 {% if user %}
-  <p>
+  <h2>
     Your games: {{ user.profile.games_bought.count }}
-  </p>
+  </h2>
   {% for game in user.profile.games_bought.all %}
-  <div>
-    <a>{{ game.name }}</a>
-    <p>{{ game.description }}</p>
-    <p>____</p>
+  <div id="gameblock">
+    <h3>{{ game.name }}</h3>
+    <p id="game_description">
+      {{ game.description }}
+    </p>
   </div>
   {% endfor %}
 {% else %}
