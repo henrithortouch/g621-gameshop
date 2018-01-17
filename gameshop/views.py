@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
 from gameshop.models import Game
+from gameshop.forms import CustomSignUpForm
 
 def about(request):
     return HttpResponse("about page")
@@ -19,7 +20,7 @@ def home(request):
 
 def register(request):
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = CustomSignUpForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
@@ -28,7 +29,7 @@ def register(request):
             login(request, user)
             return redirect('/')
     else:
-        form = UserCreationForm()
+        form = CustomSignUpForm()
     return render(request, "gameshop/register.html", {"form": form})
 # Create your views here.
 

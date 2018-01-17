@@ -1,5 +1,5 @@
 {% if user %}
-    <p>Hello {{user}}!</p>
+    <p>Hello {{user}}! <small><a href="/logout">Log out</a></small></p>
 {% else %}
-    <p>You are not logged in. <a href="/login">Please log in</a><p>
+    <p><small>You are not logged in. <a href="/login">Please log in</a></small><p>
 {% endif %}
