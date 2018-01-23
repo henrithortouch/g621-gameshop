@@ -49,3 +49,9 @@ def logout_page(request):
     print("Attempt to logout")
     logout(request)
     return render(request, "gameshop/authentication/logout_page.html")
+
+def games(request):
+    if request.method == "SHOW_GAMES":
+        all_games = Game.objects.exclude(bought__user = request.user)
+        return render(request, "gameshop/games.html", {"games": all_games})
+    return render(request, "gameshop/games.html")

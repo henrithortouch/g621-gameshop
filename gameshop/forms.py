@@ -13,7 +13,7 @@ class CustomSignUpForm(UserCreationForm):
     last_name = forms.CharField(max_length = 30, required = False, help_text = "Optional.")
     #password1 = forms.CharField(widget = forms.PasswordInput, help_text = "<p>Your password must contain at least 8 characters.</p>", label = "Password")
     #password2 = forms.CharField(widget = forms.PasswordInput, help_text = "Repeat password", label = "Repeat password")
-    usertype = forms.ChoiceField(required = True, widget = forms.Select, choices = USER_TYPE_CHOICES, help_text = "Select your account type based on your usage.")
+    usertype = forms.ChoiceField(required = True, widget = forms.Select, choices = USER_TYPE_CHOICES, help_text = "Select your account type based on your usage.", initial = None)
     #choice = forms.ChoiceField(choices, required = True)
     email = forms.EmailField(max_length=254, required = True, help_text='Required. Inform a valid email address.')
     

@@ -20,7 +20,6 @@ class Profile(models.Model):
 
     #def purchase(self, game):
         
-
     def __str__(self):
         return "\nUsername: " +self.user.username
 
