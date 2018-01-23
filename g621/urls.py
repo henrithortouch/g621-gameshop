@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 "from django.urls import path"
 from django.conf.urls import url
-from gameshop.views import about, home, gamescreen, inventory, register, logout_page
+from gameshop.views import *
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -28,5 +28,6 @@ urlpatterns = [
     url(r'^login/$', auth_views.login, {'template_name': 'gameshop/authentication/login.html'}),
     url(r'^logout/$',logout_page),
     url(r'^gamescreen/$', gamescreen),
+    url(r'^inventory/dev/$', dev_inventory),
     url(r'^inventory/$', inventory),
     ]
