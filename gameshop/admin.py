@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import Game, Profile, Ownership
+from .models import *
 
 admin.site.register(Game)
 admin.site.register(Profile)
-admin.site.register(Ownership)
+admin.site.register(Developer)
