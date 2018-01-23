@@ -3,11 +3,36 @@ from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def games(self):
+        return Game.objects.filter(bought=self).all()
+
+    def owned(self):
+        return Game.objects.filter(owner=Developer.objects.get(profile=self))
+
+    def addGame(self, game):
+        self.games_bought.add(game)
+        game.addSale()
+        self.save()
+
+    def __str__(self):
+        return "\nUsername: " +self.user.username
+
+class Developer(models.Model):
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return "\nDev profile for user " + self.profile.user.username
+
 class Game(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True)
     name = models.CharField(max_length=50)
     description = models.TextField()
     sales = models.IntegerField(default=0)
+    owner = models.ForeignKey(Developer, on_delete=models.CASCADE)
+    bought = models.ManyToManyField(Profile)
 
     def addSale(self):
         self.select_for_update()
@@ -18,23 +43,6 @@ class Game(models.Model):
     def __str__(self):
         return "\nName: " + self.name + "\n" \
             + "Description: " + self.description
-
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    games = models.ManyToManyField(Game, through='Ownership')
-
-    def addGame(self, game):
-        self.games_bought.add(game)
-        game.addSale()
-        self.save()
-
-    def __str__(self):
-        return "\nUsername: " +self.user.username
-
-class Ownership(models.Model):
-    owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    owned = models.BooleanField(default=False)
     
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

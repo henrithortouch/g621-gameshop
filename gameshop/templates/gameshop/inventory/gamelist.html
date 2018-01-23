@@ -6,7 +6,7 @@
     <h2>
       Your games: {{ user.profile.games.count }}
     </h2>
-    {% for game in user.profile.games.all %}
+    {% for game in user.profile.games %}
       <div id="gameblock">
         <h3>{{ game.name }}</h3>
         <p id="game_description">
@@ -15,18 +15,16 @@
       </div>
     {% endfor %}
   {% else %}
-    {% for game in user.profile.games.all %}
-      {% if game.owned == False %}
-        <div id="gameblock">
-          <h3>{{ game.name }}</h3>
-          <p id="game_description">
-            {{ game.description }}
-          </p>
-          <p id="game_sales">
-            {{ game.sales }}
-          </p>
-        </div>
-      {% endif %}
+    {% for game in user.profile.owned %}
+      <div id="gameblock">
+        <h3>{{ game.name }}</h3>
+        <p id="game_description">
+          {{ game.description }}
+        </p>
+        <p id="game_sales">
+          sales: {{ game.sales }}
+        </p>
+      </div>
     {% endfor %}
   {% endif %}
 {% else %}
