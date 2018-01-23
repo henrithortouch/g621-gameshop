@@ -36,11 +36,14 @@ def register(request):
 def gamescreen(request):
     return render(request, "gameshop/gamescreen.html", {})
 
-def inventory(request):
+def inventory(request, userView = True):
     template = loader.get_template("gameshop/inventory.html")
-    context = {"user": request.user}
+    context = {"user": request.user, "userView": userView}
     return HttpResponse(template.render(context))
-    
+
+def dev_inventory(request):
+    return inventory(request, False)
+
 #@login_required(login_url='/login/')
 def logout_page(request):
     print("Attempt to logout")
