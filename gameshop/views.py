@@ -31,7 +31,12 @@ def register(request):
     else:
         form = CustomSignUpForm()
     return render(request, "gameshop/register.html", {"form": form})
-# Create your views here.
+
+def shop(request):
+    template = loader.get_template("gameshop/shop.html")
+    gamelist = Game.objects.all()
+    context = { "gamelist": gamelist }
+    return HttpResponse(template.render(context))
 
 def gamescreen(request):
     return render(request, "gameshop/gamescreen.html", {})

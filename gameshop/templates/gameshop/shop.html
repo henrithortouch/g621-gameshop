@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Shop page</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <div id="header">
+    {% include "gameshop/header.html" %}
+      </div>
+    <div>
+      {% for game in gamelist %}
+        <div id="gamestoreblock">
+          <h3 id="game_name">
+            {{ game.name }}
+          </h3>
+          <h4 id="game_studioname">
+            By: {{ game.owner.studioname }}
+          </h4>
+          <p id="game_description">
+            {{ game.description }}
+          </p>
+        </div>
+      {% endfor %}
+    </div>
+    <div id="footer">
+      {% include "gameshop/footer.html" %}
+    </div>
+  </body>
+</html>

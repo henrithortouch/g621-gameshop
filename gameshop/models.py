@@ -5,7 +5,7 @@ from django.dispatch import receiver
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    money = 0
+    money = models.IntegerField(default=0)
 
     def games(self):
         return Game.objects.filter(bought=self).all()
@@ -18,13 +18,12 @@ class Profile(models.Model):
         game.addSale()
         self.save()
 
-    #def purchase(self, game):
-        
     def __str__(self):
         return "\nUsername: " +self.user.username
 
 class Developer(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    studioname = models.CharField(max_length=50)
     
     def __str__(self):
         return "\nDev profile for user " + self.profile.user.username
@@ -35,7 +34,7 @@ class Game(models.Model):
     description = models.TextField()
     sales = models.IntegerField(default=0)
     owner = models.ForeignKey(Developer, on_delete=models.CASCADE)
-    bought = models.ManyToManyField(Profile)
+    bought = models.ManyToManyField(Profile, blank=True)
 
     def addSale(self):
         self.select_for_update()
