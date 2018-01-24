@@ -5,6 +5,7 @@ from django.dispatch import receiver
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    money = models.IntegerField(default=0)
 
     def games(self):
         return Game.objects.filter(bought=self).all()
@@ -40,6 +41,9 @@ class Game(models.Model):
         self.sales = self.sales + 1
         self.save()
         transaction.commit()
+
+    def addOwner(self, profile):
+        self.bought.add(profile)
 
     def __str__(self):
         return "\nName: " + self.name + "\n" \

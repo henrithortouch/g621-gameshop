@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+  <head>
+    <title>Test</title>
+    <meta charset="utf-8" />
+    <script type="text/javascript" src="{% static 'lib/jquery-3.2.1.min.js' %}"></script>
+  </head>
+  <body>
+  {% csrf_token %}
+
+    <h4>Test</h4>
+    <button type="button" id="show">press</button>
+    <p> Hello
+    <div id="list">
+    
+    {% include "gameshop/inventory/game_list.html" %}
+    
+    </div>
+    </p>
+    <script type="text/javascript" src="{% static 'gameshop/games.js' %}"></script>
+  </body>
+</html>
