@@ -16,7 +16,11 @@ def home(request):
     #return render(request, "gameshop/home.html", {}, content_type = 'text/html')
     if request.user != None:
         print(request.user.username + " is logged in")
-    return render(request, "gameshop/home.html", {"user": request.user.username})
+
+    template = loader.get_template("gameshop/home.html")
+    context = {"user": request.user.username}
+
+    return HttpResponse(template.render(context))
 
 def register(request):
     if request.method == "POST":

@@ -1,22 +1,14 @@
-<!DOCTYPE html>
-{% load staticfiles %}
-<html>
-  <head>
-    <title>Home page</title>
-    <!-- link rel="stylesheet" href="layout.css" /-->
-    <meta charset="utf-8" />
-  </head>
-  <body>
-  <div id="header">
-    {% include "gameshop/header.html" %}
-    {% include "gameshop/authentication/login_confirmation_header.html" %}
-  </div>
+{% extends "gameshop/generic.html" %}
+
+{% block title %}Home page{% endblock %}
+
+{% block content %}
+  {% load staticfiles %}
+  {% include "gameshop/authentication/login_confirmation_header.html" %}
   <div id="main">
     <p>Filler text for main, this is not important<p>
     <button type="button" onclick="showChocola()">Pet me!</button>
   </div>
   <img id="Chocola" src="{% static "gameshop/chocola.png" %}" style="display: none"; />
-  {% include "gameshop/footer.html" %}
   <script type="text/javascript" src="{% static 'gameshop/home.js' %}"></script>
-  </body>
-</html>
+{% endblock %}
