@@ -33,6 +33,7 @@ class Game(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
     sales = models.IntegerField(default=0)
+    price = models.IntegerField(default=0)
     owner = models.ForeignKey(Developer, on_delete=models.CASCADE)
     bought = models.ManyToManyField(Profile, blank=True)
 
