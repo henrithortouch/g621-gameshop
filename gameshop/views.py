@@ -6,8 +6,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
-from gameshop.models import Game
+from gameshop.models import Game, Game_state
 from gameshop.forms import CustomSignUpForm
+
+import json
 
 def about(request):
     return HttpResponse("about page")
@@ -49,3 +51,17 @@ def logout_page(request):
     print("Attempt to logout")
     logout(request)
     return render(request, "gameshop/authentication/logout_page.html")
+
+#GET request handler
+def machine_save_request(request):
+    print("Something happened")
+    obj = json.loads(request)
+    if obj.message_type == "SAVE_REQUEST" and obj.u_id != None:
+        data = obj.gameState
+        u_id = obj.u_id
+        state = Game_state.objects.get(user_id=u_id)
+        print(state)
+        state.save_state(data)
+        return HttpResponse("SUCCESS")
+        #placeholder
+    return Http404()

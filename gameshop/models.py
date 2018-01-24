@@ -22,7 +22,7 @@ class Profile(models.Model):
 
 class Developer(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
-    
+
     def __str__(self):
         return "\nDev profile for user " + self.profile.user.username
 
@@ -43,7 +43,20 @@ class Game(models.Model):
     def __str__(self):
         return "\nName: " + self.name + "\n" \
             + "Description: " + self.description
-    
+
+class Game_state(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    save_state = models.TextField(max_length=None, default="NOSAVE")
+
+    def save_state(self, json):
+        self.save_state = json
+        self.save()
+
+    def load_state(self):
+        return self.save_state
+
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
