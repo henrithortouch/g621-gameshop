@@ -19,7 +19,7 @@ class Profile(models.Model):
         self.save()
 
     #def purchase(self, game):
-        
+
     def __str__(self):
         return "\nUsername: " +self.user.username
 
@@ -36,6 +36,8 @@ class Game(models.Model):
     sales = models.IntegerField(default=0)
     owner = models.ForeignKey(Developer, on_delete=models.CASCADE)
     bought = models.ManyToManyField(Profile)
+    # IMPORTANT REMEMBER TO NOT SET DEFAULT IN PRODUCTION, IT'S ONLY FOR TESTING PURPOSES
+    url = models.CharField(max_length=300, default='http://webcourse.cs.hut.fi/example_game.html')
 
     def addSale(self):
         self.select_for_update()
