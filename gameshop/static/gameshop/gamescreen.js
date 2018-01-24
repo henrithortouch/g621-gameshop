@@ -16,8 +16,19 @@
                         "game_state": state,
                         //"u_id" : u_id
                     }
-                    console.log(JSON.stringify(msg))
-                    console.log(window.location + "save_state/")
+
+                    var response = $.ajax({
+                        type: "POST",
+                        beforeSend: function(request) {
+                            request.setRequestHeader("X-CSRFToken", document.getElementsByName('csrfmiddlewaretoken')[0].value);
+                        },
+                        url: window.location + "save_state/",
+                        data: msg,
+                        success: function(data, status, xhttp) {
+                            console.log("SUCCESS jee jee")
+                        },
+                    });
+
                     // Posts to this fucking window get a better function
                     //var response = window.postMessage(msg, window.location + "save_state/")
                     console.log(response)
