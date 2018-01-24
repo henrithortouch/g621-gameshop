@@ -22,6 +22,7 @@ class Profile(models.Model):
 
 class Developer(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    studioname = models.CharField(max_length=50)
     
     def __str__(self):
         return "\nDev profile for user " + self.profile.user.username
