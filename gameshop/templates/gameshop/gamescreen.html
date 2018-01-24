@@ -2,19 +2,23 @@
 {% load staticfiles %}
 <html>
 <head>
-    <script src="{% static 'lib/jquery-3.2.1.min.js' %}" ></script>
-    <script src="{% static 'gameshop/gamescreen.js' %}"></script>
-    <title>Game page</title>
+  <script src="{% static 'lib/jquery-3.2.1.min.js' %}" ></script>
+  <script src="{% static 'gameshop/gamescreen.js' %}"></script>
+  <title>Game page</title>
 </head>
 {% csrf_token %}
 <div id="header">
   {% include "gameshop/header.html" %}
 </div>
+{% if user.is_authenticated %}
 <div id="highscores">
-    <h3>Highscores</h3>
-        <p>Placeholder text, insert highscores here</p>
+  <h3>Highscores</h3>
+    <p>Placeholder text, insert highscores here</p>
 </div>
 <body>
-    <iframe id='game_frame' height="1000" width="1000" src="http://webcourse.cs.hut.fi/example_game.html"></iframe>
+  <iframe id='game_frame' height="1000" width="1000" src="http://webcourse.cs.hut.fi/example_game.html"></iframe>
 </body>
 </html>
+{% else %}
+  <p>Please log in to use this stuff<p>
+{% endif %}

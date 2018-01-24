@@ -54,9 +54,14 @@ def logout_page(request):
 
 #GET request handler
 def machine_save_request(request):
-    print("Something happened")
-    obj = json.loads(request)
-    if obj.message_type == "SAVE_REQUEST" and obj.u_id != None:
+        data = dict(request.POST)
+        print(data)
+        if request.user.is_authenticated :
+            u_id = request.user.id
+            state = Game_state.objects.get(user_id=u_id)
+        return Http404()
+"""
+    print(data)
         data = obj.gameState
         u_id = obj.u_id
         state = Game_state.objects.get(user_id=u_id)
@@ -65,3 +70,4 @@ def machine_save_request(request):
         return HttpResponse("SUCCESS")
         #placeholder
     return Http404()
+"""

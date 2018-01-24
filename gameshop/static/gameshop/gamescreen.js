@@ -10,12 +10,7 @@
 
                 } else if(evt.data.messageType === "SAVE") {
                     var state = evt.data.gameState
-                    var json = JSON.stringify(state)
-                    var msg = {
-                        "message_type": "SAVE_REQUEST",
-                        "game_state": state,
-                        //"u_id" : u_id
-                    }
+                    var msg = state
 
                     var response = $.ajax({
                         type: "POST",

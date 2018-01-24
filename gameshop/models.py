@@ -46,11 +46,13 @@ class Game(models.Model):
 
 class Game_state(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    save_state = models.TextField(max_length=None, default="NOSAVE")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    save_score = models.TextField(max_length=None, default="NOSAVE")
+    save_items = models.TextField(max_length=None, default="NOSAVE")
 
-    def save_state(self, json):
-        self.save_state = json
+    def save_state(self, score, items):
+        self.save_score = score
+        self.save_items = items
         self.save()
 
     def load_state(self):
