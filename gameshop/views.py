@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
-from gameshop.models import Game
+from gameshop.models import Game, Developer, Profile
 from gameshop.forms import CustomSignUpForm
 
 def about(request):
@@ -47,7 +47,9 @@ def gamescreen(request):
 
 def inventory(request, userView = True):
     template = loader.get_template("gameshop/inventory.html")
-    context = {"user": request.user, "userView": userView}
+    profile = Profile.objects.get(user=request.user)
+    dev = Developer.objects.get(profile=profile)
+    context = {"user": request.user, "userView": userView, "developer": dev}
     return HttpResponse(template.render(context))
 
 def dev_inventory(request):
