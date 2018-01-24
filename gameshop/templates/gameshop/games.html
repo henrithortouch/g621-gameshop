@@ -12,7 +12,10 @@
   {% csrf_token %}
   <h4>Test</h4>
   <button type="button" id="show">press</button>
-  <p> Hello</p>
+  <button type="button" id="money">I am not gay but 20$ is 20$</button>
+  <p> Hello </p>
+  {{profile.user}}
+  {{profile.money}} €
   <div id="list">
     {% include "gameshop/inventory/game_list.html" %}
   </div>

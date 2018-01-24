@@ -18,6 +18,13 @@ class Profile(models.Model):
         game.addSale()
         self.save()
 
+    def addMoney(self, amount):
+        if amount > 0:
+            self.money += amount
+            self.save()    
+    
+    #def purchase(self, game):
+        
     def __str__(self):
         return "\nUsername: " +self.user.username
 

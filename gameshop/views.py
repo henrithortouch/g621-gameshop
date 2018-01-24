@@ -62,7 +62,12 @@ def logout_page(request):
     return render(request, "gameshop/authentication/logout_page.html")
 
 def games(request):
+    profile = Profile.objects.filter(user = request.user)[0]
     if request.method == "GET" and request.is_ajax():
         all_games = Game.objects.exclude(bought__user = request.user)
         return render(request, "gameshop/inventory/game_list.html", {"games": all_games, "text": "text"})
-    return render(request, "gameshop/games.html")
+    elif request.method == "ADD_MONEY" and request.is_ajax():
+        amount = 20
+        profile.addMoney(amount)
+        return HttpResponse(amount, content_type="text/plain")
+    return render(request, "gameshop/games.html", {"profile": profile})
