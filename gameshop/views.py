@@ -52,6 +52,12 @@ def logout_page(request):
     logout(request)
     return render(request, "gameshop/authentication/logout_page.html")
 
+def games(request):
+    if request.method == "GET" and request.is_ajax():
+        all_games = Game.objects.exclude(bought__user = request.user)
+        return render(request, "gameshop/inventory/game_list.html", {"games": all_games, "text": "text"})
+    return render(request, "gameshop/games.html")
+
 #GET request handler
 def machine_save_request(request):
         data = dict(request.POST)
@@ -60,14 +66,3 @@ def machine_save_request(request):
             u_id = request.user.id
             state = Game_state.objects.get(user_id=u_id)
         return Http404()
-"""
-    print(data)
-        data = obj.gameState
-        u_id = obj.u_id
-        state = Game_state.objects.get(user_id=u_id)
-        print(state)
-        state.save_state(data)
-        return HttpResponse("SUCCESS")
-        #placeholder
-    return Http404()
-"""

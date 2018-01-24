@@ -31,4 +31,5 @@ urlpatterns = [
     url(r'^gamescreen/save_state/$', machine_save_request),
     url(r'^inventory/dev/$', dev_inventory),
     url(r'^inventory/$', inventory),
+    url(r'^games/$', games),
     ]
