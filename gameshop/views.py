@@ -49,11 +49,15 @@ def gamescreen(request):
 def inventory(request, userView = True):
     template = loader.get_template("gameshop/inventory.html")
     profile = Profile.objects.get(user=request.user)
-    dev = Developer.objects.get(profile=profile)
+    if not userView:
+        dev = Developer.objects.get(profile=profile)
+    else:
+        dev = None
+        
     context = {"user": request.user, "userView": userView, "developer": dev}
     return HttpResponse(template.render(context))
 
-@login_required
+@login_required(login_url='/login/')
 def dev_inventory(request):
     return inventory(request, False)
 
