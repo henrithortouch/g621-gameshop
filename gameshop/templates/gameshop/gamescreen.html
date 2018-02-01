@@ -9,9 +9,14 @@
 {% endblock %}
 
 {% block content %}
-  <div id="highscores">
-    <h3>Highscores</h3>
-    <p>Placeholder text, insert highscores here</p>
-  </div>
-  <iframe id='game_frame' height="1000" width="1000" src="http://webcourse.cs.hut.fi/example_game.html"></iframe>
+  <p>This game page should be for the game {{ game.name }}</p>
+  {% if hasGame %}
+    <div id="highscores">
+      <h3>Highscores</h3>
+      <p>Placeholder text, insert highscores here</p>
+    </div>
+    <iframe id='game_frame' height="1000" width="1000" src="http://webcourse.cs.hut.fi/example_game.html"></iframe>
+  {% else %}
+    <p>You haven't bought this game, so you don't have access to it</p>
+  {% endif %}
 {% endblock %}

@@ -13,6 +13,13 @@ class Profile(models.Model):
     def owned(self):
         return Game.objects.filter(owner=Developer.objects.get(profile=self))
 
+    def hasBought(self, game):
+        g = Game.objects.filter(id=game.id).filter(bought=self)
+        if g:
+            return True
+        else:
+            return False
+
     def addGame(self, game):
         self.games_bought.add(game)
         game.addSale()

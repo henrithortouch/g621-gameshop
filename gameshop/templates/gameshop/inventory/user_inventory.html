@@ -8,9 +8,9 @@
       <p id="game_description">
         {{ game.description }}
       </p>
-      <button id="game_play_button">
-        Play now!
-      </button>
+      <form action="/gamescreen/{{ game.id }}/">
+        <input type="submit" value="Play now!" />
+      </form>
     </div>
   {% endfor %}
 </div>
