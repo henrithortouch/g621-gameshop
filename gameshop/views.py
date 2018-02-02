@@ -35,8 +35,9 @@ def register(request):
     return render(request, "gameshop/register.html", {"form": form})
 # Create your views here.
 
-def gamescreen(request):
-    return render(request, "gameshop/gamescreen.html", {})
+def gamescreen(request, game_id):
+    url = Game.objects.get(id = game_id).url
+    return render(request, "gameshop/gamescreen.html", {"url": url})
 
 def inventory(request, userView = True):
     template = loader.get_template("gameshop/inventory.html")
@@ -64,5 +65,5 @@ def machine_save_request(request):
         print(data)
         if request.user.is_authenticated :
             u_id = request.user.id
-            state = Game_state.objects.get(user_id=u_id)
+            state = Game_state.objects.get(user__id=u_id)
         return Http404()
