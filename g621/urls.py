@@ -15,10 +15,11 @@ Including another URLconf
 """
 
 from django.contrib import admin
-"from django.urls import path"
 from django.conf.urls import url
+from django.urls import path
 from gameshop.views import *
 from django.contrib.auth import views as auth_views
+from gameshop import views
 
 urlpatterns = [
     url('admin/', admin.site.urls),
@@ -28,7 +29,7 @@ urlpatterns = [
     url(r'^login/$', auth_views.login, {'template_name': 'gameshop/authentication/login.html'}),
     url(r'^logout/$',logout_page),
     url(r'^shop/$', shop),
-    url(r'^gamescreen/$', gamescreen),
+    path('gamescreen/<int:game_id>/', views.gamescreen),
     url(r'^inventory/dev/$', dev_inventory),
     url(r'^inventory/$', inventory),
     url(r'^games/$', games),

@@ -1,4 +1,4 @@
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseNotFound
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.template import loader, Context
@@ -42,17 +42,23 @@ def shop(request):
     context = { "gamelist": gamelist }
     return HttpResponse(template.render(context))
 
-def gamescreen(request):
-    return render(request, "gameshop/gamescreen.html", {})
+@login_required(login_url='/login/')
+def gamescreen(request, game_id=None):
+    try:
+        game = Game.objects.get(id = game_id)
+    except Game.DoesNotExist:
+        return HttpResponseNotFound("Specified game was not found")
+
+    template = loader.get_template("gameshop/gamescreen.html")
+    hasGame = request.user.profile.hasBought(game)
+    context = { "game": game, "user": request.user, "hasGame": hasGame }
+    return HttpResponse(template.render(context))
 
 @login_required(login_url='/login/')
 def inventory(request, userView = True):
     template = loader.get_template("gameshop/inventory.html")
-    profile = Profile.objects.get(user=request.user)
-    if not userView:
-        dev = Developer.objects.get(profile=profile)
-    else:
-        dev = None
+    prof = Profile.objects.get(user=request.user)
+    dev = Developer.objects.filter(profile=prof).first()
         
     context = {"user": request.user, "userView": userView, "developer": dev}
     return HttpResponse(template.render(context))
