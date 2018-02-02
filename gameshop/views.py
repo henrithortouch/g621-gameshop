@@ -1,4 +1,4 @@
-from django.http import HttpResponse, Http404, HttpResponseNotFound
+from django.http import HttpResponse, Http404, HttpResponseNotFound, HttpResponseRedirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.template import loader, Context
@@ -83,3 +83,8 @@ def games(request):
         profile.addMoney(amount)
         return HttpResponse(amount, content_type="text/plain")
     return render(request, "gameshop/games.html", {"profile": profile})
+
+def buy(request):
+    data = request.GET
+    print(data)
+    return render(request, "gameshop/payment_form.html", {"price": data})

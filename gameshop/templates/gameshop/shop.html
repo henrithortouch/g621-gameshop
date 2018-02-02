@@ -1,8 +1,16 @@
 {% extends "gameshop/generic.html" %}
 
+{% block script %}
+  {% load staticfiles %}
+  <script type="text/javascript" src="{% static 'lib/jquery-3.2.1.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'lib/js-cookie.js' %}"></script>
+  <script type="text/javascript" src="{% static 'gameshop/purchase_game.js' %}"></script>
+{% endblock %}
+
 {% block title %}G621 - Game Shop{% endblock %}
 
 {% block content %}
+{% csrf_token %}
   {% for game in gamelist %}
     <div id="gamestoreblock">
       <h3 id="game_name">
@@ -17,7 +25,8 @@
       <p id="game_price">
         Price: {{ game.price }}  €
       </p>
-      <button id="shop_buy">Buy now!</button>
+      <button class="shop_buy">Buy now!</button>
     </div>
   {% endfor %}
 {% endblock %}
+

@@ -18,6 +18,7 @@ $(document).ready(function () {
         console.log({csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value})
         console.log("ok")
     });
+    
     $("#money").on("click", function(event) {
         
         // Prevent the default behaviour e.g. re-rendering of page
