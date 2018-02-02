@@ -1,0 +1,16 @@
+<div id="inventory">
+  <h2>
+    Your games: {{ user.profile.games.count }}
+  </h2>
+  {% for game in user.profile.games %}
+    <div id="gameblock">
+      <h3>{{ game.name }}</h3>
+      <p id="game_description">
+        {{ game.description }}
+      </p>
+      <button id="game_play_button">
+        Play now!
+      </button>
+    </div>
+  {% endfor %}
+</div>

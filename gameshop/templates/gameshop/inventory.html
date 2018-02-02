@@ -1,22 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Invetory page</title>
-</head>
-<body>
-  <div id="header">
-    {% include "gameshop/header.html" %}
-  </div>
-  <div id=gamelist>
-    <!--To choose between dev and user views
-        Use either a) Different inheriting ?? templates? 
-                   b) If to include different html's?
-         
-        Or just a full new view? Check at view.py which type user is?-->
-    {% include "gameshop/inventory/gamelist.html" %}
-  </div>
-  <div id="footer">
-    {% include "gameshop/footer.html" %}
-  </div>
-</body>
-</html>
+{% extends "gameshop/generic.html" %}
+
+{% block title %}G621 - Inventory{% endblock %}
+
+{% block content%}
+  {% if user %}
+    {% if userView %}    
+      {% if developer %}
+        <div id="inventory_view_toggle">
+          <a href="/inventory/dev">My Studio</a>
+        </div>
+      {% endif %}
+      {% include "gameshop/inventory/user_inventory.html" %}
+    {% else %}    
+      {% if developer %}
+        <div id="inventory_view_toggle">
+          <a href="/inventory">My Games</a>
+        </div>
+      {% endif %}
+      {% include "gameshop/inventory/dev_inventory.html" %}
+    {% endif %}
+  {% else %}
+    <p>Please log in!</p>
+  {% endif %}
+{% endblock %}

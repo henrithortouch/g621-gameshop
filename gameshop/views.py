@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
-from gameshop.models import Game, Profile
+from gameshop.models import Game, Developer, Profile
 from gameshop.forms import CustomSignUpForm
 
 def about(request):
@@ -16,7 +16,11 @@ def home(request):
     #return render(request, "gameshop/home.html", {}, content_type = 'text/html')
     if request.user != None:
         print(request.user.username + " is logged in")
-    return render(request, "gameshop/home.html", {"user": request.user.username})
+
+    template = loader.get_template("gameshop/home.html")
+    context = {"user": request.user.username}
+
+    return HttpResponse(template.render(context))
 
 def register(request):
     if request.method == "POST":
@@ -41,11 +45,19 @@ def shop(request):
 def gamescreen(request):
     return render(request, "gameshop/gamescreen.html", {})
 
+@login_required(login_url='/login/')
 def inventory(request, userView = True):
     template = loader.get_template("gameshop/inventory.html")
-    context = {"user": request.user, "userView": userView}
+    profile = Profile.objects.get(user=request.user)
+    if not userView:
+        dev = Developer.objects.get(profile=profile)
+    else:
+        dev = None
+        
+    context = {"user": request.user, "userView": userView, "developer": dev}
     return HttpResponse(template.render(context))
 
+@login_required(login_url='/login/')
 def dev_inventory(request):
     return inventory(request, False)
 

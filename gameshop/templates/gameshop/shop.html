@@ -1,30 +1,23 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Shop page</title>
-    <meta charset="utf-8" />
-  </head>
-  <body>
-    <div id="header">
-    {% include "gameshop/header.html" %}
-      </div>
-    <div>
-      {% for game in gamelist %}
-        <div id="gamestoreblock">
-          <h3 id="game_name">
-            {{ game.name }}
-          </h3>
-          <h4 id="game_studioname">
-            By: {{ game.owner.studioname }}
-          </h4>
-          <p id="game_description">
-            {{ game.description }}
-          </p>
-        </div>
-      {% endfor %}
+{% extends "gameshop/generic.html" %}
+
+{% block title %}G621 - Game Shop{% endblock %}
+
+{% block content %}
+  {% for game in gamelist %}
+    <div id="gamestoreblock">
+      <h3 id="game_name">
+        {{ game.name }}
+      </h3>
+      <h4 id="game_studioname">
+        By: {{ game.owner.studioname }}
+      </h4>
+      <p id="game_description">
+        {{ game.description }}
+      </p>
+      <p id="game_price">
+        Price: {{ game.price }}  €
+      </p>
+      <button id="shop_buy">Buy now!</button>
     </div>
-    <div id="footer">
-      {% include "gameshop/footer.html" %}
-    </div>
-  </body>
-</html>
+  {% endfor %}
+{% endblock %}
