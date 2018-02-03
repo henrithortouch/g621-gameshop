@@ -6,15 +6,13 @@ $(document).ready(function (){
         var json_data = {"price": price[1]};
         $.ajax({
             type: "GET",
-            url: "/buy/",
             beforeSend: function(request) {
                 var csrftoken = Cookies.get('csrftoken');
                 request.setRequestHeader("X-CSRFToken", csrftoken);
             },
-            data: json_data,
             success: function(data, status, xhttp) {
                 console.log(data);
-                //window.location.replace(data);
+                //window.location = '/';
             }
         })
     });

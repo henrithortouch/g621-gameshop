@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from hashlib import md5
+import random
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -59,6 +61,16 @@ class Game(models.Model):
 
     def addOwner(self, profile):
         self.bought.add(profile)
+
+    def createChecksum(self):
+        secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
+        pid = random.SystemRandom().randint(0, 10000)
+        checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, "G621", self.price, secret_key)
+        m = md5(checksumstr.encode("ascii"))
+        checksum = m.hexdigest()
+        result = "{};{}".format(checksum, pid)
+        return result
+        
 
     def __str__(self):
         return "\nName: " + self.name + "\n" \

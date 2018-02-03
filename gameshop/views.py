@@ -39,7 +39,11 @@ def register(request):
 def shop(request):
     template = loader.get_template("gameshop/shop.html")
     gamelist = Game.objects.all()
-    context = { "gamelist": gamelist }
+    if not request.user.is_anonymous:
+        profile = Profile.objects.filter(user = request.user)[0]
+    else:
+        profile = False
+    context = { "gamelist": gamelist, "profile": profile }
     return HttpResponse(template.render(context))
 
 @login_required(login_url='/login/')
