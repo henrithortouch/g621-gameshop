@@ -28,8 +28,8 @@
       <p id="game_price">
         Price: {{ game.price }}  €
       </p>
-      <form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST">
-        <input id="{{game.name}}" type="text" name="pid" value=""/>
+      <form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST" id="{{game.name}}">
+        <input type="hidden" name="pid" value=""/>
         <input type="hidden" name="sid" value="G621" />
         <input type="hidden" name="success_url"
             value="http://localhost:8000/" />
@@ -37,23 +37,19 @@
             value="http://localhost:8000/payment/cancel" />
         <input type="hidden" name="error_url"
             value="http://localhost:8000/payment/error" />
-        <input id="{{game.id}}" type="hidden" name="checksum"
+        <input type="hidden" name="checksum"
             value="" />
         <input type="hidden" id="id_amount" name="amount" value="{{game.price}}" />
         {% if profile %}
-            <input type="submit" value="Buy now!"/>
+            <input class="shop_buy" id="{{game.id}}" type="button" onclick="buy(this.id)" value="Buy now!"/>
         {% else %}
             <input value="Buy now!" disabled/>
         {% endif %}
        </form>
-       <script>
-            var res = "{{game.createChecksum}}";
-            var data = res.split(";");
-            document.getElementById("{{game.name}}").value = data[1];
-            console.log(data);
-            document.getElementById("{{game.id}}").value = data[0];
-       </script>
     </div>
   {% endfor %}
+    <script type="text/javascript">
+            
+     </script>
 {% endblock %}
 

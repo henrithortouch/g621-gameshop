@@ -1,4 +1,4 @@
-from django.http import HttpResponse, Http404, HttpResponseNotFound, HttpResponseRedirect
+from django.http import HttpResponse, Http404, HttpResponseNotFound, JsonResponse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.template import loader, Context
@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 
 from gameshop.models import Game, Developer, Profile
 from gameshop.forms import CustomSignUpForm
+import json
 
 def about(request):
     return HttpResponse("about page")
@@ -89,6 +90,11 @@ def games(request):
     return render(request, "gameshop/games.html", {"profile": profile})
 
 def buy(request):
-    data = request.GET
-    print(data)
-    return render(request, "gameshop/payment_form.html", {"price": data})
+    data = dict(request.GET)
+    game_id = data["game_id"][0]
+    game = Game.objects.filter(id = game_id)[0]
+    checksum = game.createChecksum()
+    json_data = json.loads(checksum)
+    #print(game)
+    #print(json_data)
+    return JsonResponse(json_data)

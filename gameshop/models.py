@@ -3,7 +3,7 @@ from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from hashlib import md5
-import random
+import random, json
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -68,7 +68,7 @@ class Game(models.Model):
         checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, "G621", self.price, secret_key)
         m = md5(checksumstr.encode("ascii"))
         checksum = m.hexdigest()
-        result = "{};{}".format(checksum, pid)
+        result = """{"%s": "%s", "%s": %s, "%s": "%s"}""" % ("checksum", checksum, "pid", pid, "name", self.name)
         return result
         
 

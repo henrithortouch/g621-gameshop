@@ -1,19 +1,45 @@
-$(document).ready(function (){
-    $(".shop_buy").on("click", function () {
+function joo() {
+    console.log("que");
+}
+function buy(id) {
+    $.ajax({
+        type: "GET",
+        beforeSend: function(request) {
+            var csrftoken = Cookies.get('csrftoken');
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+        },
+        url: "/buy",
+        data: {"game_id": id},
+        success: function(data, status, xhttp) {
+            console.log(data);
+            var name = data["name"];
+            console.log(name);
+            var tag = "#".concat(name);
+            $(tag.concat(" input[name=pid]")).val(data["pid"]);
+            $(tag.concat(" input[name=checksum]")).val(data["checksum"]);
+            $(tag).submit();
+        }
+    });
+}
+    
 
-        var price = $(this).siblings("#game_price").text().trim().split(" ");
-        console.log(price[1]); //The current price
-        var json_data = {"price": price[1]};
+    
+    /*function buy(id) {
         $.ajax({
             type: "GET",
             beforeSend: function(request) {
                 var csrftoken = Cookies.get('csrftoken');
                 request.setRequestHeader("X-CSRFToken", csrftoken);
             },
+            url: "/buy",
+            data: {"game_id": id},
             success: function(data, status, xhttp) {
                 console.log(data);
                 //window.location = '/';
             }
-        })
-    });
-});
+        });
+        $(".shop_buy").on("click", function () {
+        
+        });
+    }*/
+
