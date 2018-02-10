@@ -1,7 +1,5 @@
  $(document).ready(function() {
             "use strict";
-            // Only listens to events, doesn't do anything else for now.
-            // Still needs django tags to execute python code for database entries
             var iframe = document.getElementById('game_frame')
 
             window.addEventListener("message", function(evt) {
@@ -24,9 +22,7 @@
                         },
                     });
 
-                    // Posts to this fucking window get a better function
                     //var response = window.postMessage(msg, window.location + "save_state/")
-                    console.log(response)
                     console.log("SAVE")
 
                 } else if(evt.data.messageType === "SCORE") {
