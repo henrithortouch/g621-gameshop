@@ -1,0 +1,11 @@
+{% for game in user.profile.owned %}
+  <div id="gameblock">
+  <h3>{{ game.name }}</h3>
+  <p id="game_description">
+    {{ game.description }}
+  </p>
+  <p id="game_sales">
+    sales: {{ game.sales }}
+  </p>
+  </div>
+{% endfor %}

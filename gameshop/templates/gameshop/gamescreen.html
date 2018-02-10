@@ -1,24 +1,22 @@
-<!DOCTYPE html>
+{% extends "gameshop/generic.html" %}
+
+{% block title %}G621 - Game page{% endblock %}
+
+{% block script %}
 {% load staticfiles %}
-<html>
-<head>
   <script src="{% static 'lib/jquery-3.2.1.min.js' %}" ></script>
   <script src="{% static 'gameshop/gamescreen.js' %}"></script>
-  <title>Game page</title>
-</head>
-{% csrf_token %}
-<div id="header">
-  {% include "gameshop/header.html" %}
-</div>
-{% if user.is_authenticated %}
-<div id="highscores">
-  <h3>Highscores</h3>
-    <p>Placeholder text, insert highscores here</p>
-</div>
-<body>
-  <iframe id='game_frame' height="1000" width="1000" src="{% url %}"></iframe>
-</body>
-</html>
-{% else %}
-  <p>Please log in to use this stuff<p>
-{% endif %}
+{% endblock %}
+
+{% block content %}
+  <p>This game page should be for the game {{ game.name }}</p>
+  {% if hasGame %}
+    <div id="highscores">
+      <h3>Highscores</h3>
+      <p>Placeholder text, insert highscores here</p>
+    </div>
+    <iframe id='game_frame' height="1000" width="1000" src="{% url %}"></iframe>
+  {% else %}
+    <p>You haven't bought this game, so you don't have access to it</p>
+  {% endif %}
+{% endblock %}

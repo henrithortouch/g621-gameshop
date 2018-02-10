@@ -5,7 +5,7 @@ from django.dispatch import receiver
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    money = 0
+    money = models.IntegerField(default=0)
 
     def games(self):
         return Game.objects.filter(bought=self).all()
@@ -13,11 +13,23 @@ class Profile(models.Model):
     def owned(self):
         return Game.objects.filter(owner=Developer.objects.get(profile=self))
 
+    def hasBought(self, game):
+        g = Game.objects.filter(id=game.id).filter(bought=self)
+        if g:
+            return True
+        else:
+            return False
+
     def addGame(self, game):
         self.games_bought.add(game)
         game.addSale()
         self.save()
 
+    def addMoney(self, amount):
+        if amount > 0:
+            self.money += amount
+            self.save()    
+    
     #def purchase(self, game):
 
     def __str__(self):
@@ -25,7 +37,8 @@ class Profile(models.Model):
 
 class Developer(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
-
+    studioname = models.CharField(max_length=50)
+    
     def __str__(self):
         return "\nDev profile for user " + self.profile.user.username
 
@@ -34,10 +47,11 @@ class Game(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
     sales = models.IntegerField(default=0)
+    price = models.IntegerField(default=0)
     owner = models.ForeignKey(Developer, on_delete=models.CASCADE)
-    bought = models.ManyToManyField(Profile)
     # IMPORTANT REMEMBER TO NOT SET DEFAULT IN PRODUCTION, IT'S ONLY FOR TESTING PURPOSES
     url = models.CharField(max_length=300, default='http://webcourse.cs.hut.fi/example_game.html')
+    bought = models.ManyToManyField(Profile, blank=True)
 
     def addSale(self):
         self.select_for_update()
