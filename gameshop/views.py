@@ -50,12 +50,10 @@ def gamescreen(request, game_id=None):
         game = Game.objects.get(id = game_id)
     except Game.DoesNotExist:
         return HttpResponseNotFound("Specified game was not found")
-
     url = game.url
-    template = loader.get_template("gameshop/gamescreen.html")
     hasGame = request.user.profile.hasBought(game)
     context = { "game": game, "user": request.user, "hasGame": hasGame, "game_url": url}
-    return HttpResponse(template.render(context))
+    return render(request, "gameshop/gamescreen.html", context)
 
 @login_required(login_url='/login/')
 def inventory(request, userView = True):
@@ -90,7 +88,7 @@ def games(request):
 
 #GET request handler
 @login_required(login_url='/login/')
-def machine_save_request(request):
+def machine_save_request(request, game_id=None):
     #Not ready yet, do something to this
         data = dict(request.POST)
         print(data)
