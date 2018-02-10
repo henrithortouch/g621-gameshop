@@ -51,9 +51,10 @@ def gamescreen(request, game_id=None):
     except Game.DoesNotExist:
         return HttpResponseNotFound("Specified game was not found")
 
+    url = game.url
     template = loader.get_template("gameshop/gamescreen.html")
     hasGame = request.user.profile.hasBought(game)
-    context = { "game": game, "user": request.user, "hasGame": hasGame }
+    context = { "game": game, "user": request.user, "hasGame": hasGame, "game_url": url}
     return HttpResponse(template.render(context))
 
 @login_required(login_url='/login/')

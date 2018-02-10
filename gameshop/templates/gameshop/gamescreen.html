@@ -15,7 +15,7 @@
       <h3>Highscores</h3>
       <p>Placeholder text, insert highscores here</p>
     </div>
-    <iframe id='game_frame' height="1000" width="1000" src="{% url %}"></iframe>
+    <iframe id='game_frame' height="1000" width="1000" src="{{ game_url }}"></iframe>
   {% else %}
     <p>You haven't bought this game, so you don't have access to it</p>
   {% endif %}
