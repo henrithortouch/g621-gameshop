@@ -2,8 +2,13 @@
 
 {% block title %}G621 - Game page{% endblock %}
 
+{%  block pageHeader %}
+  <div class="page-header">
+  </div>
+{% endblock %}
+
 {% block script %}
-{% load staticfiles %}
+  {% load staticfiles %}
   <script src="{% static 'lib/jquery-3.2.1.min.js' %}" ></script>
   <script src="{% static 'gameshop/gamescreen.js' %}"></script>
 {% endblock %}
