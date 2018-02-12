@@ -1,16 +1,33 @@
-<div id="inventory">
-  <h2>
-    Your games: {{ user.profile.games.count }}
-  </h2>
-  {% for game in user.profile.games %}
-    <div id="gameblock">
-      <h3>{{ game.name }}</h3>
-      <p id="game_description">
-        {{ game.description }}
-      </p>
-      <form action="/gamescreen/{{ game.id }}/">
-        <input type="submit" value="Play now!" />
-      </form>
-    </div>
-  {% endfor %}
-</div>
+{% extends "gameshop/inventory.html" %}
+
+{% block pageHeader %}
+  <div class="page-header">
+    <h1>
+      My games
+    </h1>
+  </div>
+{% endblock %}
+
+{% block viewToggle %}
+  {% if developer %}
+  <div class="inventory-view-toggle">
+    <a href="/inventory/dev/">My Studio</a>
+  </div>
+  {% endif %}
+{% endblock %}
+
+{% block inventory %}
+  <div id="inventory">
+    {% for game in user.profile.games %}
+      <div class="store-block">
+        <h3>{{ game.name }}</h3>
+        <p class="game-description">
+          {{ game.description }}
+        </p>
+        <form action="/gamescreen/{{ game.id }}/">
+          <input type="submit" value="Play now!" />
+        </form>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

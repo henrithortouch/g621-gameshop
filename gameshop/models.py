@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from hashlib import md5
+import random, json
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -54,13 +56,24 @@ class Game(models.Model):
     bought = models.ManyToManyField(Profile, blank=True)
 
     def addSale(self):
-        self.select_for_update()
+        #self.select_for_update()
         self.sales = self.sales + 1
         self.save()
-        transaction.commit()
+        #transaction.commit()
 
     def addOwner(self, profile):
         self.bought.add(profile)
+        self.save()
+
+    def createChecksum(self):
+        secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
+        pid = random.SystemRandom().randint(0, 100000)
+        checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, "G621", self.price, secret_key)
+        m = md5(checksumstr.encode("ascii"))
+        checksum = m.hexdigest()
+        result = """{"%s": "%s", "%s": %s, "%s": "%s"}""" % ("checksum", checksum, "pid", pid, "name", self.name)
+        return result
+        
 
     def __str__(self):
         return "\nName: " + self.name + "\n" \
