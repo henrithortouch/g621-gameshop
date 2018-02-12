@@ -18,6 +18,7 @@ function buy(id) {
             $(tag.concat(" input[name=pid]")).val(data["pid"]);
             $(tag.concat(" input[name=checksum]")).val(data["checksum"]);
             $(tag).submit();
+            console.log("Submitting form")
         }
     });
 }

@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect
 from gameshop.models import Game, Developer, Profile
 from gameshop.forms import CustomSignUpForm
 import json
+from hashlib import md5
 
 def about(request):
     return HttpResponse("about page")
@@ -95,6 +96,47 @@ def buy(request):
     game = Game.objects.filter(id = game_id)[0]
     checksum = game.createChecksum()
     json_data = json.loads(checksum)
-    #print(game)
-    #print(json_data)
+    pid = checksum.split(",")[1].split(":")[1].strip()
+    request.session[str(pid)] = game_id
+    print(game)
+    print(json_data)
     return JsonResponse(json_data)
+
+def payment_error(request):
+    secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
+    return render(request, "gameshop/payment/payment_error.html")
+
+def payment_cancel(request):
+    secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
+    return render(request, "gameshop/payment/payment_cancel.html")
+
+def payment(request):
+    secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
+    data = dict(request.GET)
+    pid = data["pid"][0]
+    ref = data["ref"][0]
+    result = data["result"][0]
+    checksumstr = "pid={}&ref={}&result={}&token={}".format(pid, ref, result, secret_key)
+    m = md5(checksumstr.encode("ascii"))
+    checksum = m.hexdigest()
+    validate_checksum = data["checksum"][0]
+    validation = False
+    if validate_checksum == checksum:
+        validation = True
+    if result == "success" and validation:
+        game_id = request.session.get(str(pid))
+        #print(game_id)
+        game = Game.objects.get(id = game_id)
+        profile = Profile.objects.filter(user = request.user)[0]
+        if not profile in game.bought.all():
+            game.addOwner(profile)
+            game.addSale()
+        return render(request, "gameshop/payment/payment_success.html")
+    elif result == "cancel" and validation:
+        game_id = request.session["game_id"] = None
+        #print(game_id)
+        return render(request, "gameshop/payment/payment_cancel.html")
+    else:
+        game_id = request.session["game_id"] = None
+        #print(game_id)
+        return render(request, "gameshop/payment/payment_error.html")

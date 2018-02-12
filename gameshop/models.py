@@ -54,17 +54,18 @@ class Game(models.Model):
     bought = models.ManyToManyField(Profile, blank=True)
 
     def addSale(self):
-        self.select_for_update()
+        #self.select_for_update()
         self.sales = self.sales + 1
         self.save()
-        transaction.commit()
+        #transaction.commit()
 
     def addOwner(self, profile):
         self.bought.add(profile)
+        self.save()
 
     def createChecksum(self):
         secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
-        pid = random.SystemRandom().randint(0, 10000)
+        pid = random.SystemRandom().randint(0, 100000)
         checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, "G621", self.price, secret_key)
         m = md5(checksumstr.encode("ascii"))
         checksum = m.hexdigest()
