@@ -33,7 +33,7 @@ class Profile(models.Model):
             self.save()    
     
     #def purchase(self, game):
-        
+
     def __str__(self):
         return "\nUsername: " +self.user.username
 
@@ -51,6 +51,8 @@ class Game(models.Model):
     sales = models.IntegerField(default=0)
     price = models.IntegerField(default=0)
     owner = models.ForeignKey(Developer, on_delete=models.CASCADE)
+    # IMPORTANT REMEMBER TO NOT SET DEFAULT IN PRODUCTION, IT'S ONLY FOR TESTING PURPOSES
+    url = models.CharField(max_length=300, default='http://webcourse.cs.hut.fi/example_game.html')
     bought = models.ManyToManyField(Profile, blank=True)
 
     def addSale(self):
@@ -76,7 +78,22 @@ class Game(models.Model):
     def __str__(self):
         return "\nName: " + self.name + "\n" \
             + "Description: " + self.description
-    
+
+class Game_state(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    save_score = models.TextField(max_length=None, default="NOSAVE")
+    save_items = models.TextField(max_length=None, default="NOSAVE")
+
+    def save_state(self, score, items):
+        self.save_score = score
+        self.save_items = items
+        self.save()
+
+    def load_state(self):
+        return self.save_state
+
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
