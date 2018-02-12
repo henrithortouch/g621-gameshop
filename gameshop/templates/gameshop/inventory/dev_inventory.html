@@ -1,5 +1,14 @@
 {% extends "gameshop/inventory.html" %}
 
+{%  block pageHeader %}
+  <div class="page-header">
+    <h1>
+      {{ developer.studioname }}
+    </h1>
+  </div>
+{% endblock %}
+
+
 {% block viewToggle %}
   <div id="inventory_view_toggle">
     <a href="/inventory/user/">My Games</a>
@@ -8,12 +17,12 @@
 
 {% block inventory %}
   {% for game in user.profile.owned %}
-    <div id="gameblock">
+    <div class="store-block">
     <h3>{{ game.name }}</h3>
-    <p id="game_description">
+    <p class="game-description">
       {{ game.description }}
     </p>
-    <p id="game_sales">
+    <p>
       sales: {{ game.sales }}
     </p>
     </div>

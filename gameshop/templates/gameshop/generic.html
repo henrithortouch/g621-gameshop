@@ -11,9 +11,10 @@
     {% block script %}{% endblock %}
   </head>
   <body>
-  <div id="header">
-    {% include "gameshop/common/header.html" %}
-  </div>
+  {% include "gameshop/common/link_header.html" %}
+
+  {% block pageHeader %}{% endblock %}
+  
   {% block content %}
     <p>
       Content should be displayed here.

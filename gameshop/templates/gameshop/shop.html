@@ -2,9 +2,17 @@
 
 {% block title %}G621 - Game Shop{% endblock %}
 
+{%  block pageHeader %}
+  <div class="page-header">
+    <h1>
+      G621 Game Store
+    </h1>
+  </div>
+{% endblock %}
+
 {% block content %}
   {% for game in gamelist %}
-    <div id="gamestoreblock">
+    <div class="store-block">
       <h3 id="game_name">
         {{ game.name }}
       </h3>
