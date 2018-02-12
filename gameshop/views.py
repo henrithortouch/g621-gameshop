@@ -9,6 +9,8 @@ from django.shortcuts import render, redirect
 from gameshop.models import Game, Developer, Profile
 from gameshop.forms import CustomSignUpForm
 
+import json
+
 def about(request):
     return HttpResponse("about page")
 
@@ -49,9 +51,10 @@ def gamescreen(request, game_id=None):
     except Game.DoesNotExist:
         return HttpResponseNotFound("Specified game was not found")
 
+    url = game.url
     template = loader.get_template("gameshop/gamescreen.html")
     hasGame = request.user.profile.hasBought(game)
-    context = { "game": game, "user": request.user, "hasGame": hasGame }
+    context = { "game": game, "user": request.user, "hasGame": hasGame, "game_url": url}
     return HttpResponse(template.render(context))
 
 @login_required(login_url='/login/')
@@ -83,3 +86,15 @@ def games(request):
         profile.addMoney(amount)
         return HttpResponse(amount, content_type="text/plain")
     return render(request, "gameshop/games.html", {"profile": profile})
+
+
+#GET request handler
+@login_required(login_url='/login/')
+def machine_save_request(request):
+    #Not ready yet, do something to this
+        data = dict(request.POST)
+        print(data)
+        if request.user.is_authenticated :
+            u_id = request.user.id
+            state = Game_state.objects.get(user__id=u_id)
+        return Http404()
