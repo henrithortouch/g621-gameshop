@@ -2,15 +2,33 @@
             "use strict";
             // Only listens to events, doesn't do anything else for now.
             // Still needs django tags to execute python code for database entries
-            var iframe = document.getElementById('game_frame');
+            var iframe = document.getElementById('game_frame')
 
             window.addEventListener("message", function(evt) {
                 if(evt.data.messageType === "LOAD_REQUEST") {
-                    // Load game here
                     console.log("LOAD")
+
                 } else if(evt.data.messageType === "SAVE") {
-                    // Saves game to db
+                    var state = evt.data.gameState
+                    var msg = state
+
+                    var response = $.ajax({
+                        type: "POST",
+                        beforeSend: function(request) {
+                            request.setRequestHeader("X-CSRFToken", document.getElementsByName('csrfmiddlewaretoken')[0].value);
+                        },
+                        url: window.location + "save_state/",
+                        data: msg,
+                        success: function(data, status, xhttp) {
+                            console.log("SUCCESS jee jee")
+                        },
+                    });
+
+                    // Posts to this fucking window get a better function
+                    //var response = window.postMessage(msg, window.location + "save_state/")
+                    console.log(response)
                     console.log("SAVE")
+
                 } else if(evt.data.messageType === "SCORE") {
                     // Saves score to highscores
                     console.log("SCORE")
