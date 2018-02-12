@@ -3,8 +3,10 @@
   <head>
     <title>{% block title %}G621{% endblock %}</title>
     <!-- link rel="stylesheet" href="layout.css" /-->
+    {% load staticfiles %}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{% static 'css/gameshop.css' %}">
     <meta charset="utf-8" />
     {% block script %}{% endblock %}
   </head>
