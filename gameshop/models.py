@@ -85,6 +85,9 @@ class Game_state(models.Model):
     save_score = models.TextField(max_length=None, default="NOSAVE")
     save_items = models.TextField(max_length=None, default="NOSAVE")
 
+    class Meta:
+        unique_together = (("game", "profile"),)
+
     def save_state(self, score, items):
         self.save_score = score
         self.save_items = items
