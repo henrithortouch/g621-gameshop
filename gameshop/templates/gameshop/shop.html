@@ -28,7 +28,7 @@
       <p id="game_price">
         Price: {{ game.price }}  €
       </p>
-      <form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST" id="{{game.name}}">
+      <form action="//payments.webcourse.niksula.hut.fi/pay/" method="POST" id="{{game.name}}">
         <input type="hidden" name="pid" value=""/>
         <input type="hidden" name="sid" value="G621" />
         <input type="hidden" name="success_url"
