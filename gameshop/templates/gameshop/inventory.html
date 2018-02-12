@@ -4,21 +4,8 @@
 
 {% block content%}
   {% if user %}
-    {% if userView %}    
-      {% if developer %}
-        <div id="inventory_view_toggle">
-          <a href="/inventory/dev">My Studio</a>
-        </div>
-      {% endif %}
-      {% include "gameshop/inventory/user_inventory.html" %}
-    {% else %}    
-      {% if developer %}
-        <div id="inventory_view_toggle">
-          <a href="/inventory">My Games</a>
-        </div>
-      {% endif %}
-      {% include "gameshop/inventory/dev_inventory.html" %}
-    {% endif %}
+    {% block viewToggle %}{% endblock %}
+    {% block inventory %}{% endblock %}   
   {% else %}
     <p>Please log in!</p>
   {% endif %}

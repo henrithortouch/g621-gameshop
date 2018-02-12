@@ -55,17 +55,22 @@ def gamescreen(request, game_id=None):
     return HttpResponse(template.render(context))
 
 @login_required(login_url='/login/')
-def inventory(request, userView = True):
-    template = loader.get_template("gameshop/inventory.html")
+def user_inventory(request):
+    template = loader.get_template("gameshop/inventory/user_inventory.html")
     prof = Profile.objects.get(user=request.user)
     dev = Developer.objects.filter(profile=prof).first()
         
-    context = {"user": request.user, "userView": userView, "developer": dev}
+    context = {"user": request.user, "developer": dev}
     return HttpResponse(template.render(context))
 
 @login_required(login_url='/login/')
 def dev_inventory(request):
-    return inventory(request, False)
+    template = loader.get_template("gameshop/inventory/dev_inventory.html")
+    prof = Profile.objects.get(user=request.user)
+    dev = Developer.objects.filter(profile=prof).first()
+
+    context = {"user": request.user, "developer": dev}
+    return HttpResponse(template.render(context))
 
 #@login_required(login_url='/login/')
 def logout_page(request):
