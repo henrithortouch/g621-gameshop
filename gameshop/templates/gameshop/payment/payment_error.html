@@ -1,0 +1,16 @@
+{% extends "gameshop/generic.html" %}
+
+{% block script %}
+  {% load staticfiles %}
+  <script type="text/javascript" src="{% static 'lib/jquery-3.2.1.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'lib/js-cookie.js' %}"></script>
+{% endblock %}
+
+{% block title %}G621 - Error in payment{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+    <p>
+        Payment resulted in an error
+    </p>
+{% endblock %}

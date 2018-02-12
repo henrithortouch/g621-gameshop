@@ -34,4 +34,8 @@ urlpatterns = [
     url(r'^inventory/dev/$', dev_inventory),
     url(r'^inventory/$', inventory),
     url(r'^games/$', games),
+    url(r'^buy/$', buy),
+    url(r'^payment/cancel/$', payment),
+    url(r'^payment/error/$', payment),
+    url(r'^payment/success/$', payment),
     ]

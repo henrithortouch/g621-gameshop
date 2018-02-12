@@ -1,8 +1,19 @@
 {% extends "gameshop/generic.html" %}
 
+{% block script %}
+  {% load staticfiles %}
+  <script type="text/javascript" src="{% static 'lib/jquery-3.2.1.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'lib/js-cookie.js' %}"></script>
+  <script type="text/javascript" src="{% static 'gameshop/purchase_game.js' %}"></script>
+{% endblock %}
+
 {% block title %}G621 - Game Shop{% endblock %}
 
 {% block content %}
+{% csrf_token %}
+  {% if profile is False %}
+    <small><a href="/login/">Sign in</a> to purchase games</small>
+  {% endif %}
   {% for game in gamelist %}
     <div id="gamestoreblock">
       <h3 id="game_name">
@@ -17,7 +28,28 @@
       <p id="game_price">
         Price: {{ game.price }}  €
       </p>
-      <button id="shop_buy">Buy now!</button>
+      <form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST" id="{{game.name}}">
+        <input type="hidden" name="pid" value=""/>
+        <input type="hidden" name="sid" value="G621" />
+        <input type="hidden" name="success_url"
+            value="http://localhost:8000/payment/success" />
+        <input type="hidden" name="cancel_url"
+            value="http://localhost:8000/payment/cancel" />
+        <input type="hidden" name="error_url"
+            value="http://localhost:8000/payment/error" />
+        <input type="hidden" name="checksum"
+            value="" />
+        <input type="hidden" id="id_amount" name="amount" value="{{game.price}}" />
+        {% if profile %}
+            <input class="shop_buy" id="{{game.id}}" type="button" onclick="buy(this.id)" value="Buy now!"/>
+        {% else %}
+            <input value="Buy now!" disabled/>
+        {% endif %}
+       </form>
     </div>
   {% endfor %}
+    <script type="text/javascript">
+            
+     </script>
 {% endblock %}
+

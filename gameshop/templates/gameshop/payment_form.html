@@ -1,0 +1,16 @@
+<form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST">
+    <input type="hidden" name="pid" value="payment1" />
+    <input type="hidden" name="sid" value="G621" />
+    <input type="hidden" name="success_url"
+            value="http://localhost:8000/payment/success" />
+    <input type="hidden" name="cancel_url"
+            value="http://localhost:8000/payment/cancel" />
+    <input type="hidden" name="error_url"
+            value="http://localhost:8000/payment/error" />
+    <input type="hidden" name="checksum"
+            value="" />
+
+    <label for="id_amount">Amount</label>
+    <input type="text" readonly="readonly" id="id_amount" name="amount" value="{{price}}" />
+    <input type="submit" value="Accept Payment"/>
+</form>
