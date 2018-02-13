@@ -145,7 +145,7 @@ def payment(request):
         game_id = request.session.get(str(pid))
         try:
             game = Game.objects.get(id = game_id)
-        except Game.DoesNotExist
+        except Game.DoesNotExist:
             return Http404
         profile = Profile.objects.filter(user = request.user)[0]
         if not profile.hasBought(game):
