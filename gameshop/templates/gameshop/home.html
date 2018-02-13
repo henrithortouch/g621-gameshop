@@ -7,6 +7,12 @@
   <script type="text/javascript" src="{% static 'gameshop/home.js' %}"></script>
 {% endblock %}
 
+{% block pageHeader %}
+  <div class="page-header">
+    <h1>Welcome to G621</h1>
+  </div>
+{% endblock %}
+
 {% block content %}
   {% include "gameshop/authentication/login_confirmation_header.html" %}
   <div id="main">
