@@ -43,16 +43,14 @@ def register(request):
 def shop(request):
     template = loader.get_template("gameshop/shop.html")
     games = Game.objects.all()
-    try:
-        profile = Profile.objects.get(user = request.user)
-        gamelist = map(lambda x: (x, profile.hasBought(x)), games)
-    except Profile.DoesNotExist:
-        gamelist = games
 
     if not request.user.is_anonymous:
-        profile = Profile.objects.filter(user = request.user)[0]
+        profile = profile = Profile.objects.get(user = request.user)
+        gamelist = map(lambda x: (x, profile.hasBought(x)), games)
     else:
-        profile = False
+        profile = None
+        gamelist = map(lambda x: (x, False), games)
+        
     context = { "gamelist": gamelist, "profile": profile }
     return HttpResponse(template.render(context))
 
