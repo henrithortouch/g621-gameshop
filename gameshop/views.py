@@ -38,7 +38,7 @@ def register(request):
             return redirect('/')
     else:
         form = CustomSignUpForm()
-    return render(request, "gameshop/register.html", {"form": form})
+    return render(request, "gameshop/authentication/register.html", {"form": form})
 
 def shop(request):
     template = loader.get_template("gameshop/shop.html")

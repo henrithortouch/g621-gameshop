@@ -1,12 +1,20 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Register Account</title>
-    <meta charset="utf-8" />
-  </head>
-  <body>
-    <h1>Welcome to G621</h1>
-    <h4>Register your free G621 account</h4>
+{% extends "gameshop/generic.html" %}
+
+{% block script %}
+  {% load staticfiles %}
+  <link rel="stylesheet" href="{% static 'css/authentication.css' %}">
+{% endblock %}
+
+{% block title %}G621 - Register Account{% endblock %}
+
+{%  block pageHeader %}
+  <div class="page-header">
+   <h1>Welcome to G621</h1>
+   <h4>Register your free G621 account</h4>
+  </div>
+{% endblock %}
+
+{% block content %}
     <div id="login_div" />
         <form action="" method="post">
         {% csrf_token %}
@@ -25,5 +33,4 @@
     {% endfor %}
         <button type="submit">Register Account</button>
         </form>
-  </body>
-</html>
+{% endblock %}
