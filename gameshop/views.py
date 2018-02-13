@@ -151,7 +151,6 @@ def payment(request):
 def machine_save(request, game_id=None):
     # TODO: Replace 500 with error response
     data = dict(request.POST)
-    print(data)
     try:
         score = data['score']
         items = data['playerItems[]']
@@ -174,9 +173,9 @@ def machine_save(request, game_id=None):
 def machine_score(request, game_id=None):
     # TODO: Replace 500 with error response
     data = dict(request.POST)
+    print(data)
     try:
-        score = data['score']
-        print(json.loads(score))
+        score = data['score'][0]
         game = Game.objects.get(id = game_id)
         profile = Profile.objects.get(user = request.user)
         state = Game_state.objects.get(profile = profile, game = game)
