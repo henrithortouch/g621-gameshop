@@ -15,9 +15,17 @@ function buy(id) {
             var name = data["name"];
             console.log(name);
             var tag = "#".concat(name);
-            $(tag.concat(" input[name=pid]")).val(data["pid"]);
-            $(tag.concat(" input[name=checksum]")).val(data["checksum"]);
-            $(tag).submit();
+            var form = $(tag);
+            console.log(form);
+            var pid = form.find("input[name=pid]");
+            pid.val(data["pid"]);
+            console.log(pid);
+            var checksum = form.find("input[name=checksum]");
+            checksum.val(data["checksum"]);
+            console.log(checksum);
+            //$(tag.concat(" input[name=pid]")).val(data["pid"]);
+            //$(tag.concat(" input[name=checksum]")).val(data["checksum"]);
+            form.submit();
             console.log("Submitting form")
         }
     });
