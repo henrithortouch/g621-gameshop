@@ -1,23 +1,18 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Login</title>
-    <meta charset="utf-8" />
-  </head>
-  <body>
-    <div id="header">
-        {% include "gameshop/common/link_header.html" %}
-    </div>
-    {% block content %}
-    <h2>Login</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Login</button>
-    </form>
-    <p>
-        <small>Don't have an account yet? <a href="/register">Register a new account</a></small>
-    </p>
-    {% endblock %}
-  </body>
-</html>
+{% extends "gameshop/generic.html" %}
+
+{% block title%}G621 - Login{% endblock %}
+
+{% block pageHeader %}
+  <h2 class="page-header">Login</h2>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+  </form>
+  <p>
+    <small>Don't have an account yet? <a href="/register">Register a new account</a></small>
+  </p>
+{% endblock %}
