@@ -6,12 +6,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
-from gameshop.models import Game, Developer, Profile
+from gameshop.models import Game, Developer, Profile, Game_state
 from gameshop.forms import CustomSignUpForm
 import json
 from hashlib import md5
 
-import json
 
 def about(request):
     return HttpResponse("about page")
@@ -147,13 +146,53 @@ def payment(request):
         #print(game_id)
         return render(request, "gameshop/payment/payment_error.html")
 
-#GET request handler
+# Handlers for game Save, Score, Load requests
 @login_required(login_url='/login/')
-def machine_save_request(request, game_id=None):
-    #Not ready yet, do something to this
-        data = dict(request.POST)
-        print(data)
-        if request.user.is_authenticated :
-            u_id = request.user.id
-            state = Game_state.objects.get(user__id=u_id)
-        return Http404()
+def machine_save(request, game_id=None):
+    # TODO: Replace 500 with error response
+    data = dict(request.POST)
+    print(data)
+    try:
+        score = data['score']
+        items = data['playerItems[]']
+        game = Game.objects.get(id = game_id)
+        profile = Profile.objects.get(user = request.user)
+        state = Game_state.objects.get(profile = profile, game = game)
+        state.save_state(score = score, items = items)
+    except KeyError:
+        return HttpResponse('No post data', status=400)
+    except Game.DoesNotExist:
+        return HttpResponse('Game not found',status=500)
+    except Profile.DoesNotExist:
+        return HttpResponse('User not found',status=500)
+    except Game_state.DoesNotExist:
+        return HttpResponse('Game state not found',status=500)
+    return HttpResponse('OK', status=200)
+
+
+@login_required(login_url='/login/')
+def machine_score(request, game_id=None):
+    # TODO: Replace 500 with error response
+    data = dict(request.POST)
+    try:
+        score = data['score']
+        print(json.loads(score))
+        game = Game.objects.get(id = game_id)
+        profile = Profile.objects.get(user = request.user)
+        state = Game_state.objects.get(profile = profile, game = game)
+        state.submit_score(score = score)
+    except KeyError:
+        return HttpResponse('No post data', status=400)
+    except Game.DoesNotExist:
+        return HttpResponse('Game not found',status=500)
+    except Profile.DoesNotExist:
+        return HttpResponse('User not found',status=500)
+    except Game_state.DoesNotExist:
+        return HttpResponse('Game state not found',status=500)
+    return HttpResponse('OK', status=200)
+
+
+@login_required(login_url='/login/')
+def machine_load(request, game_id=None):
+    req = dict(request.GET)
+    return HttpResponse('OK')

@@ -51,7 +51,7 @@ class Game(models.Model):
     sales = models.IntegerField(default=0)
     price = models.IntegerField(default=0)
     owner = models.ForeignKey(Developer, on_delete=models.CASCADE)
-    # IMPORTANT REMEMBER TO NOT SET DEFAULT IN PRODUCTION, IT'S ONLY FOR TESTING PURPOSES
+    #TODO: IMPORTANT REMEMBER TO NOT SET DEFAULT IN PRODUCTION, IT'S ONLY FOR TESTING PURPOSES
     url = models.CharField(max_length=300, default='http://webcourse.cs.hut.fi/example_game.html')
     bought = models.ManyToManyField(Profile, blank=True, through="Game_state")
 
@@ -84,6 +84,7 @@ class Game_state(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     save_score = models.TextField(max_length=None, default="NOSAVE")
     save_items = models.TextField(max_length=None, default="NOSAVE")
+    submitted_score = models.IntegerField(null=True)
 
     class Meta:
         unique_together = (("game", "profile"),)
@@ -92,9 +93,17 @@ class Game_state(models.Model):
         self.save_score = score
         self.save_items = items
         self.save()
+    
+    def submit_score(self, score):
+        self.submitted_score = score
+        self.save()
 
     def load_state(self):
         return self.save_state
+
+    def __str__(self):
+        return "\nGame: " + self.game.name + "\n" \
+            + "Profile: " + self.profile.user.username
 
 
 @receiver(post_save, sender=User)
