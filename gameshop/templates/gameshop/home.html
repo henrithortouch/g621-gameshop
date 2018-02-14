@@ -8,10 +8,15 @@
 {% endblock %}
 
 {% block content %}
-  {% include "gameshop/authentication/login_confirmation_header.html" %}
-  <div id="main">
+    {% if user %}
+        <div class="login_prompt">Hello {{user}}!</div>
+    {% else %}
+        <div class="login_prompt">You are not logged in. <a href="/login">Please log in</a></div>
+    {% endif %}
+    
+    <div id="main">
     <p>Filler text for main, this is not important<p>
     <button type="button" onclick="showChocola()">Pet me!</button>
-  </div>
+    </div>
   <img id="Chocola" src="{% static "gameshop/chocola.png" %}" style="display: none"; />
 {% endblock %}

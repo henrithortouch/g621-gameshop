@@ -10,7 +10,17 @@
 
     --store-block-bg: #3E5573;
     --store-block-border: #FFFFFF;
+    
+    --disabled: #727984;
+    --disabled-bg: #c7c8c9;
+    
+    --buy: #3a6041;
+    --buy-bg: #06cc2d;
 }   
+
+input, select, textarea, .submit{
+    color: #21213d;
+}
 
 /* Headers */
 .page-header {
@@ -21,15 +31,15 @@
 
 .page-header h1, .page-header h1 a, .page-header h1 a:visited, .page-header h1 a:active {
     color: #ffffff;
-    font-size: 30pt;
+    font-size: 40pt;
+    font-weight: 900;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 h2, h3, h4, h5, h6, h7 {
     color: var(--head);
-}
-
-.link-header {
-    background-color: var(--header-bg);
+    margin-top: 0;
 }
 
 .footer {
@@ -60,4 +70,50 @@ body {
 .content {
     padding-left: 40px;
     color: var(--text);
+}
+
+.login_prompt {
+    padding: 10px;
+    margin: 5px;
+    font-weight: bold;
+}
+
+.link-header {
+    background-color: var(--header-bg);
+    font-size: 15pt;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.grid-container {
+    display: inline-grid;
+    grid-template-columns: auto auto auto auto;
+    grid-column-gap: 20px;
+}
+
+#game_name {
+    font-weight: bold;
+}
+
+.shop_buy_disabled {
+    text-align: center;
+    color: var(--disabled);
+    background-color: var(--disabled-bg);
+    width:100px;
+    border-radius: 4px;
+    padding-bottom: 4px;
+}
+
+.shop_buy {
+    text-align: center;
+    color: var(--buy);
+    background-color: var(--buy-bg);
+    width:100px;
+    border-radius: 8px;
+    padding-bottom: 4px;
+}
+
+.field_help_text {
+    /*color: var(--head);*/
+    font-size: 10pt;
 }

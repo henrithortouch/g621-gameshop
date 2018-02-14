@@ -24,13 +24,13 @@
         {{ field.label_tag }}<br>
         {{ field }}
         {% if field.help_text %}
-          <small style="color: grey">{{ field.help_text | safe }}</small>
+          <small class="field_help_text">{{ field.help_text | safe }}</small>
         {% endif %}
         {% for error in field.errors %}
           <p style="color: red">{{ error }}</p>
         {% endfor %}
       </p>
     {% endfor %}
-        <button type="submit">Register Account</button>
+        <button class="submit" type="submit">Register Account</button>
         </form>
 {% endblock %}

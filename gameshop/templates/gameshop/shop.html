@@ -20,7 +20,7 @@
 {% block content %}
 {% csrf_token %}
   {% if profile is False %}
-    <small><a href="/login/">Sign in</a> to purchase games</small>
+    <div class="login_prompt"><small><a href="/login/">Sign in</a> to purchase games</small></div>
   {% endif %}
   {% for game in gamelist %}
     <div class="store-block">
@@ -51,13 +51,11 @@
         {% if profile %}
             <input class="shop_buy" id="{{game.id}}" type="button" onclick="buy(this.id)" value="Buy now!"/>
         {% else %}
-            <input value="Buy now!" disabled/>
+            <input class="shop_buy_disabled" value="Buy now!" disabled/>
         {% endif %}
        </form>
     </div>
   {% endfor %}
-    <script type="text/javascript">
-            
-     </script>
+    
 {% endblock %}
 
