@@ -1,0 +1,34 @@
+{% extends "gameshop/generic.html" %}
+
+{% block title %}G621 - My Studio{% endblock %}
+
+{% block pageHeader %}
+  <div class="page-header">
+    <h1>
+      {{ developer.studioname }}
+    </h1>
+    <form action="/studio/addgame/" class="add-game">
+      <input class="play-now-button" type="submit" value="Add a game" />
+    </form>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div>
+    <a href="/inventory">My Games</a>
+  </div>
+  {% for game in profile.owned %}
+    <div class="store-block">
+      <h3>{{ game.name }}</h3>
+      <p class="game-description">
+        {{ game.description }}
+      </p>
+      <p>
+        sales: {{ game.sales }}
+      </p>
+      <form action="/studio/{{ game.id }}/">
+        <input class="play-now-button" type="submit" value="Edit" />
+      </form>
+    </div>
+  {% endfor %}
+{% endblock %}

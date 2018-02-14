@@ -47,7 +47,7 @@ h2, h3, h4, h5, h6, h7 {
     display: inline-table;
 }
 
-.play-now-button {
+.play-now-button, .submit-game {
     background-color: var(--head);
     color: white;
     display: inline-block;
@@ -67,6 +67,10 @@ h2, h3, h4, h5, h6, h7 {
 
 a {
     color: var(--link);
+}
+
+form {
+    color: var(--head);
 }
 
 body {

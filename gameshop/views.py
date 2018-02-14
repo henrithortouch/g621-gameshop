@@ -7,17 +7,41 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
 from gameshop.models import Game, Developer, Profile
-from gameshop.forms import CustomSignUpForm
+from gameshop.forms import CustomSignUpForm, SubmitGameForm
+from django import forms
 import json
 from hashlib import md5
 
 import json
 
+def getUserContext(user):
+    if not user:
+        return { "profile": None, "developer": None }
+        
+    try:
+        profile = Profile.objects.get(user=user)
+    except Profile.DoesNotExist:
+        profile = None
+
+    try:
+        developer = Developer.objects.get(profile=profile)
+    except Developer.DoesNotExist:
+        developer = None
+
+    return { "profile": profile, "developer": developer }
+
+def getGame(game_id):
+    try:
+        return Game.objects.get(id=game_id)
+    except Game.DoesNotExist:
+        return None
+
+
+
 def about(request):
     return HttpResponse("about page")
 
 def home(request):
-    #return render(request, "gameshop/home.html", {}, content_type = 'text/html')
     if request.user != None:
         print(request.user.username + " is logged in")
 
@@ -34,6 +58,9 @@ def register(request):
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
+            if form.cleaned_data.get("usertype"):
+                dev = Developer.objects.create(profile=user.profile, studioname="Unset")
+                dev.save()
             login(request, user)
             return redirect('/')
     else:
@@ -51,7 +78,8 @@ def shop(request):
         profile = None
         gamelist = map(lambda x: (x, False), games)
         
-    context = { "gamelist": gamelist, "profile": profile }
+    context = getUserContext(request.user)
+    context["gamelist"] = gamelist
     return HttpResponse(template.render(context))
 
 @login_required(login_url='/login/')
@@ -68,22 +96,52 @@ def gamescreen(request, game_id=None):
     return HttpResponse(template.render(context))
 
 @login_required(login_url='/login/')
-def user_inventory(request):
-    template = loader.get_template("gameshop/inventory/user_inventory.html")
-    prof = Profile.objects.get(user=request.user)
-    dev = Developer.objects.filter(profile=prof).first()
-        
-    context = {"user": request.user, "developer": dev}
+def inventory(request):
+    template = loader.get_template("gameshop/inventory/inventory.html")
+    context = getUserContext(request.user)
+    
     return HttpResponse(template.render(context))
 
 @login_required(login_url='/login/')
-def dev_inventory(request):
-    template = loader.get_template("gameshop/inventory/dev_inventory.html")
-    prof = Profile.objects.get(user=request.user)
-    dev = Developer.objects.filter(profile=prof).first()
+def studio(request):
+    template = loader.get_template("gameshop/inventory/studio.html")
+    context = getUserContext(request.user)
 
-    context = {"user": request.user, "developer": dev}
     return HttpResponse(template.render(context))
+
+@login_required(login_url='/login/')
+def editgame(request, game_id=None):
+    if request.method == "POST":
+        return Http404()
+
+    template = "gameshop/inventory/editgame.html"
+    game = getGame(game_id)
+    context = getUserContext(request.user)
+    
+    if context["developer"]:
+        if game:
+            if context["developer"].owns(game):
+                if request.method == "POST":
+                    return Http404()
+                else:
+                    form = SubmitGameForm()
+                    form.fields["name"].initial = game.name
+                    form.fields["description"].initial = game.description
+                    form.fields["price"].initial = game.price
+                    form.fields["url"].initial = game.url
+                    context["game"] = game
+                    context["form"] = form
+                return render(request, template, context)
+        else:
+            form = SubmitGameForm()
+            context["form"] = form
+            return render(request, template, context)
+    else:
+        return Http404()
+    
+
+
+    return Http401("Unauthorized. You do not own this game.")
 
 #@login_required(login_url='/login/')
 def logout_page(request):

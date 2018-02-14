@@ -1,0 +1,34 @@
+{% extends "gameshop/generic.html" %}
+
+{% block title %}G621 - Edit Game{% endblock %}
+
+{% block pageHeader %}
+  <div class="page-header">
+    <h1>
+      {% if game %}
+        {{ game.name }} - Edit properties
+      {% else %}
+        Submit a game
+      {% endif %}
+    </h1>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="edit-game-form">
+    <form action="" method="post">
+      {% csrf_token %}
+      {% for field in form %}
+        <p>
+        {{ field.label_tag }}<br>
+        {{ field }}
+        </p>
+      {% endfor %}
+      {% if game %}
+        <button class="submit-game" type="submit">Update information</button>
+      {% else %}
+        <button class="submit-game" type="submit">Submit game</button>
+      {% endif %}
+    </form>
+  </div>
+{% endblock %}
