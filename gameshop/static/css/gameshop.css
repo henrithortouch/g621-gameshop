@@ -16,6 +16,8 @@
     
     --buy: #3a6041;
     --buy-bg: #06cc2d;
+
+    --play-bg: #034da8;
 }   
 
 input, select, textarea, .submit{
@@ -55,24 +57,6 @@ h2, h3, h4, h5, h6, h7 {
     margin: 5px;
     width: 32%;
     display: inline-table;
-}
-
-.play-now-button {
-    background-color: var(--head);
-    color: white;
-    display: inline-block;
-    text-decoration: none;
-    padding: 8px 16px;
-    border: solid 1px white;
-}
-
-.shop_buy {
-    background-color: var(--title-bg);
-    color: white;
-    display: inline-block;
-    text-decoration: none;
-    padding: 8px 16px;
-    border: solid 1px white;
 }
 
 a {
@@ -143,18 +127,34 @@ body {
     text-align: center;
     color: var(--disabled);
     background-color: var(--disabled-bg);
-    width:100px;
+    width: 100px;
     border-radius: 4px;
     padding-bottom: 4px;
 }
 
 .shop_buy {
+    display: inline-block;
+    text-decoration: none;
     text-align: center;
     color: var(--buy);
     background-color: var(--buy-bg);
-    width:100px;
+    width: 100px;
     border-radius: 8px;
+    padding-top: 0px;
     padding-bottom: 4px;
+    border: solid 1px white;
+}
+
+.play-now-button {
+    background-color: var(--play-bg);
+    color: white;
+    display: inline-block;
+    text-decoration: none;
+    padding-top: 0px;
+    padding-bottom: 4px;
+    border: solid 1px white;
+    border-radius: 12px;
+    width:110px;
 }
 
 .field_help_text {

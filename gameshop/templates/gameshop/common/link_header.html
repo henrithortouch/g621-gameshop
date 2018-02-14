@@ -5,10 +5,14 @@
     <div class="grid-item3"><a href="/gamescreen">Game screen test</a></div>
     <div class="grid-item4"><a href="/inventory/user">Inventory</a></div>
     
-    {% if user %}
-    <div class="grid-login">Welcome, {{user}} <a href="/logout">Logout</a></div>
+    {% if not user.is_anonymous %}
+        {% if user %}
+        <div class="grid-login">Welcome, {{user}} <a href="/logout">Logout</a></div>
+        {% else %}
+        <div class="grid-login"><a href="/login">Login</a></div>
+        {% endif %}
     {% else %}
-    <div class="grid-login"><a href="/login">Login</a></div>
+      <div class="grid-login"><a href="/login">Login</a></div>
     {% endif %}
     
   </div>
