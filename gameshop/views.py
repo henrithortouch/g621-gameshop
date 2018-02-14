@@ -149,10 +149,10 @@ def payment(request):
 # Handlers for game Save, Score, Load requests
 @login_required(login_url='/login/')
 def machine_save(request, game_id=None):
-    # TODO: Replace 500 with error response
     data = dict(request.POST)
+    
     try:
-        score = data['score']
+        score = data['score'][0]
         items = data['playerItems[]']
         game = Game.objects.get(id = game_id)
         profile = Profile.objects.get(user = request.user)
@@ -171,9 +171,7 @@ def machine_save(request, game_id=None):
 
 @login_required(login_url='/login/')
 def machine_score(request, game_id=None):
-    # TODO: Replace 500 with error response
     data = dict(request.POST)
-    print(data)
     try:
         score = data['score'][0]
         game = Game.objects.get(id = game_id)
@@ -193,5 +191,25 @@ def machine_score(request, game_id=None):
 
 @login_required(login_url='/login/')
 def machine_load(request, game_id=None):
-    req = dict(request.GET)
-    return HttpResponse('OK')
+    try:
+        game = Game.objects.get(id = game_id)
+        profile = Profile.objects.get(user = request.user)
+        state = Game_state.objects.get(profile = profile, game = game)
+        data = state.load_state()
+        if data[0] == 'NOSAVE' or data[1] == 'NOSAVE':
+            print("NOTHING SAVED")
+            return HttpResponse("No valid save detected", status=204)
+    except KeyError:
+        return HttpResponse('No post data', status=400)
+    except Game.DoesNotExist:
+        return HttpResponse('Game not found',status=500)
+    except Profile.DoesNotExist:
+        return HttpResponse('User not found',status=500)
+    except Game_state.DoesNotExist:
+        return HttpResponse('Game state not found',status=500)
+    print(data)
+    response = {
+        'score': data[0],
+        'playerItems': data[1],
+    }
+    return HttpResponse(json.dumps(response), status=200)
