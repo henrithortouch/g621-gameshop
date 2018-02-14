@@ -57,6 +57,24 @@ h2, h3, h4, h5, h6, h7 {
     display: inline-table;
 }
 
+.play-now-button {
+    background-color: var(--head);
+    color: white;
+    display: inline-block;
+    text-decoration: none;
+    padding: 8px 16px;
+    border: solid 1px white;
+}
+
+.shop_buy {
+    background-color: var(--title-bg);
+    color: white;
+    display: inline-block;
+    text-decoration: none;
+    padding: 8px 16px;
+    border: solid 1px white;
+}
+
 a {
     color: var(--link);
 }
@@ -65,6 +83,10 @@ body {
     background-color: var(--bg);
     padding: 0;
     color: var(--text);
+}
+
+.main {
+    width: 70%;
 }
 
 .content {

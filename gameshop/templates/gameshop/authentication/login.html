@@ -9,20 +9,17 @@
 
 {%  block pageHeader %}
   <div class="page-header">
-    <h1>
-      Login
-    </h1>
+    <h2>Login</h2>
   </div>
 {% endblock %}
 
 {% block content %}
-<form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button class="submit" type="submit">Login</button>
-    </form>
-    <p>
-        <small>Don't have an account yet? <a href="/register">Register a new account</a></small>
-    </p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="submit" type="submit">Login</button>
+  </form>
+  <p>
+    <small>Don't have an account yet? <a href="/register">Register a new account</a></small>
+  </p>
 {% endblock %}
-

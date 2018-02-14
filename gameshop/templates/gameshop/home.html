@@ -7,9 +7,17 @@
   <script type="text/javascript" src="{% static 'gameshop/home.js' %}"></script>
 {% endblock %}
 
+{% block pageHeader %}
+  <div class="page-header">
+    <h1>Welcome to G621</h1>
+  </div>
+{% endblock %}
+
 {% block content %}
-    <div id="main">
-    <p>Filler text for main, this is not important<p>
+  <div class="main">
+    <h3>Today's gaming news</h3>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut id semper mi, eget mattis tellus. Aliquam arcu nulla, ultricies dignissim quam ut, consequat luctus nulla. Suspendisse dolor enim, efficitur vel nisl ut, semper volutpat diam. Phasellus nec dignissim elit, in consectetur lacus. Maecenas sagittis mauris ac tellus mattis tincidunt. Vestibulum gravida et sapien venenatis cursus. Donec dolor magna, ornare eget fringilla vitae, tempus eget mi. Duis scelerisque nulla id mi semper, eget bibendum justo elementum. Donec ut lacus tempus turpis ullamcorper maximus eu quis nunc.</p>
+    <p>Phasellus eu orci vel dolor semper efficitur sit amet id libero. Curabitur eu dui vulputate, suscipit felis vitae, vehicula orci. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque sapien sapien, fermentum eget lorem in, varius congue libero. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi condimentum laoreet dapibus. Nam non tristique sapien. Proin sit amet aliquam erat, vitae euismod est. Suspendisse sagittis consequat erat nec eleifend. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aliquam auctor felis erat, vitae maximus dolor sodales a. </p>
     <button type="button" onclick="showChocola()">Pet me!</button>
     </div>
   <img id="Chocola" src="{% static "gameshop/chocola.png" %}" style="display: none"; />
