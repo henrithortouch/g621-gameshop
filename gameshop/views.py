@@ -150,13 +150,17 @@ def payment(request):
 @login_required(login_url='/login/')
 def machine_save(request, game_id=None):
     data = dict(request.POST)
-    
+    #TODO: Make items a optional parameter to save
     try:
-        print(data)
+        try:
+            items = data['playerItems[]']
+            #Convert items to JSON string
+            items_json = json.dumps(items)
+        except KeyError:
+            #No items given in request so make it none
+            items_json = None
+
         score = data['score'][0]
-        items = data['playerItems[]']
-        #Convert items to JSON string
-        items_json = json.dumps(items)
         game = Game.objects.get(id = game_id)
         profile = Profile.objects.get(user = request.user)
         state = Game_state.objects.get(profile = profile, game = game)
@@ -195,6 +199,7 @@ def machine_score(request, game_id=None):
 @login_required(login_url='/login/')
 def machine_load(request, game_id=None):
     try:
+        #TODO: Make items a optional parameter
         game = Game.objects.get(id = game_id)
         profile = Profile.objects.get(user = request.user)
         state = Game_state.objects.get(profile = profile, game = game)
@@ -212,8 +217,15 @@ def machine_load(request, game_id=None):
         return HttpResponse('Game state not found',status=500)
     
     #Convert JSON string items to objects
-    response = {
-        'score': data[0],
-        'playerItems': json.loads(data[1]),
-    }
+    if data[1] is not None:
+        response = {
+            'score': data[0],
+            'playerItems': json.loads(data[1]),
+        }
+    else:
+        response = {
+            'score': data[0],
+            'playerItems': ''
+        }
+
     return HttpResponse(json.dumps(response), status=200)

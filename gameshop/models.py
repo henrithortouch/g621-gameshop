@@ -83,7 +83,7 @@ class Game_state(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     save_score = models.FloatField(default=0)
-    save_items = models.TextField(max_length=None, default="NOSAVE")
+    save_items = models.TextField(max_length=None, null=True)
     submitted_score = models.FloatField(null=True)
 
     class Meta:
