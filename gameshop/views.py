@@ -47,7 +47,7 @@ def shop(request):
         profile = Profile.objects.filter(user = request.user)[0]
     else:
         profile = False
-    context = { "gamelist": gamelist, "profile": profile }
+    context = { "gamelist": gamelist, "profile": profile, "user": request.user }
     return HttpResponse(template.render(context))
 
 @login_required(login_url='/login/')
