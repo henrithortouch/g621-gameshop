@@ -16,10 +16,10 @@
                                 console.log(data)
                                 var obj = JSON.parse(data)
                                 var message = {
-                                    messageType: "SAVE",
+                                    messageType: "LOAD",
                                     gameState: obj,
                                 }
-                                console.log(obj)
+                                iframe.contentWindow.postMessage(message, "*")
                             }
                         },
                     });
@@ -35,8 +35,8 @@
                         url: window.location + "save/",
                         data: msg,
                         success: function(data, status, xhttp) {
+                            console.log("status")
                             //TODO: Send error to iframe if not success
-                            console.log("SUCCESS")
                         },
                     });
                     //var response = window.postMessage(msg, window.location + "save_state/")

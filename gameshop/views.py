@@ -152,12 +152,15 @@ def machine_save(request, game_id=None):
     data = dict(request.POST)
     
     try:
+        print(data)
         score = data['score'][0]
         items = data['playerItems[]']
+        #Convert items to JSON string
+        items_json = json.dumps(items)
         game = Game.objects.get(id = game_id)
         profile = Profile.objects.get(user = request.user)
         state = Game_state.objects.get(profile = profile, game = game)
-        state.save_state(score = score, items = items)
+        state.save_state(score = score, items = items_json)
     except KeyError:
         return HttpResponse('No post data', status=400)
     except Game.DoesNotExist:
@@ -196,7 +199,7 @@ def machine_load(request, game_id=None):
         profile = Profile.objects.get(user = request.user)
         state = Game_state.objects.get(profile = profile, game = game)
         data = state.load_state()
-        if data[0] == 'NOSAVE' or data[1] == 'NOSAVE':
+        if data[1] == 'NOSAVE':
             print("NOTHING SAVED")
             return HttpResponse("No valid save detected", status=204)
     except KeyError:
@@ -207,9 +210,10 @@ def machine_load(request, game_id=None):
         return HttpResponse('User not found',status=500)
     except Game_state.DoesNotExist:
         return HttpResponse('Game state not found',status=500)
-    print(data)
+    
+    #Convert JSON string items to objects
     response = {
         'score': data[0],
-        'playerItems': data[1],
+        'playerItems': json.loads(data[1]),
     }
     return HttpResponse(json.dumps(response), status=200)
