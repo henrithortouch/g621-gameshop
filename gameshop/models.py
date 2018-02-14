@@ -82,9 +82,9 @@ class Game(models.Model):
 class Game_state(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    save_score = models.TextField(max_length=None, default="NOSAVE")
+    save_score = models.FloatField(default=0)
     save_items = models.TextField(max_length=None, default="NOSAVE")
-    submitted_score = models.IntegerField(null=True)
+    submitted_score = models.FloatField(null=True)
 
     class Meta:
         unique_together = (("game", "profile"),)
@@ -99,7 +99,7 @@ class Game_state(models.Model):
         self.save()
 
     def load_state(self):
-        return self.save_state
+        return (self.save_score, self.save_items)
 
     def __str__(self):
         return "\nGame: " + self.game.name + "\n" \
