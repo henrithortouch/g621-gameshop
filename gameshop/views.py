@@ -38,7 +38,7 @@ def register(request):
             return redirect('/')
     else:
         form = CustomSignUpForm()
-    return render(request, "gameshop/register.html", {"form": form})
+    return render(request, "gameshop/authentication/register.html", {"form": form})
 
 def shop(request):
     template = loader.get_template("gameshop/shop.html")
@@ -50,8 +50,7 @@ def shop(request):
     else:
         profile = None
         gamelist = map(lambda x: (x, False), games)
-        
-    context = { "gamelist": gamelist, "profile": profile }
+    context = { "gamelist": gamelist, "profile": profile, "user": request.user }
     return HttpResponse(template.render(context))
 
 @login_required(login_url='/login/')
