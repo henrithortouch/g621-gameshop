@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
-from gameshop.models import Game, Developer, Profile, Game_state
+from gameshop.models import Game, Developer, Profile, Game_state, Payment
 from gameshop.forms import CustomSignUpForm
 import json
 from hashlib import md5
@@ -110,17 +110,11 @@ def buy(request):
         json_data = json.loads(checksum)
         pid = checksum.split(",")[1].split(":")[1].strip()
         request.session[str(pid)] = game_id
+        payment = Payment(game_id = game_id, pid = pid)
+        payment.save()
         return JsonResponse(json_data)
     except Game.DoesNotExist:
         return Http404
-
-def payment_error(request):
-    secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
-    return render(request, "gameshop/payment/payment_error.html")
-
-def payment_cancel(request):
-    secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
-    return render(request, "gameshop/payment/payment_cancel.html")
 
 def payment(request):
     secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
@@ -145,8 +139,12 @@ def payment(request):
         if not profile.hasBought(game):
             game.addOwner(profile)
             game.addSale()
+
+            payment = Payment.objects.filter(pid = pid)
+            game_id = payment[0].game_id
+            game = Game.objects.get(id = game_id)
             #profile.reduceMoney!!!
-        return render(request, "gameshop/payment/payment_success.html")
+        return render(request, "gameshop/payment/payment_success.html", {"game": game})
     elif result == "cancel" and validation:
         game_id = request.session["game_id"] = None
         #print(game_id)

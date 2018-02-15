@@ -13,4 +13,22 @@
     <p>
         Payment was successful
     </p>
+    <p>
+        You now own:
+    </p>
+
+    <div class="store-block">
+        <h3 id="game_name">
+          {{ game.name }}
+        </h3>
+        <h4 id="game_studioname">
+          By: {{ game.owner.studioname }}
+        </h4>
+        <p id="game_description">
+          {{ game.description }}
+        </p>   
+            <form action="/gamescreen/{{ game.id }}/">
+                <input class="play-now-button" type="submit" value="Play now!" />
+            </form>
+    </div>
 {% endblock %}
