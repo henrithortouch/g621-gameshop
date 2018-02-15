@@ -67,6 +67,7 @@ class Game(models.Model):
 
     def createChecksum(self):
         secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
+        # sys.maxsize?
         pid = random.SystemRandom().randint(0, 100000)
         checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, "G621", self.price, secret_key)
         m = md5(checksumstr.encode("ascii"))
@@ -93,6 +94,18 @@ class Game_state(models.Model):
     def load_state(self):
         return self.save_state
 
+class Payment(models.Model):
+    game_id = models.TextField(max_length=None, default="NULL")
+    pid = models.TextField(max_length=None, default="NULL")
+
+    def save_payment(self, game_id, pid):
+        self.game_id = game_id
+        self.pid = pid
+        self.save()
+
+    def get_data(self):
+        result = """{"game_id": "%s", "pid": %s}""" % (self.game_id, self.pid)
+        return result
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
