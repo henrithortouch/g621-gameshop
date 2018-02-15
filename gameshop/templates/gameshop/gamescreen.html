@@ -2,8 +2,9 @@
 
 {% block title %}G621 - Game page{% endblock %}
 
-{%  block pageHeader %}
+{% block pageHeader %}
   <div class="page-header">
+    <h1>{{ game.name }}</h1>
   </div>
 {% endblock %}
 
@@ -14,9 +15,7 @@
 {% endblock %}
 
 {% block content %}
-
-  <p>This game page should be for the game {{ game.name }}</p>
-  {% csrf_token %}
+{% csrf_token %}
   {% if hasGame %}
     <div id="highscores">
       <h3>Highscores</h3>

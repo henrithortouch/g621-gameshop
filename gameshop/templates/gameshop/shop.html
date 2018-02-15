@@ -14,15 +14,20 @@
     <h1>
       G621 Game Store
     </h1>
+    {% if not profile %}
+    <a href="/login">
+      Please log in to buy games!
+    </a>
+    {% endif %}
   </div>
 {% endblock %}
 
 {% block content %}
 {% csrf_token %}
-  {% if profile is False %}
-    <small><a href="/login/">Sign in</a> to purchase games</small>
-  {% endif %}
-  {% for game in gamelist %}
+{% if profile is False %}
+<div class="login_prompt"><small><a href="/login/">Sign in</a> to purchase games</small></div>
+{% endif %}  
+{% for game, owned in gamelist %}
     <div class="store-block">
       <h3 id="game_name">
         {{ game.name }}
@@ -33,31 +38,35 @@
       <p id="game_description">
         {{ game.description }}
       </p>
-      <p id="game_price">
-        Price: {{ game.price }}  €
-      </p>
-      <form action="//payments.webcourse.niksula.hut.fi/pay/" method="POST" id="{{game.name}}">
-        <input type="hidden" name="pid" value=""/>
-        <input type="hidden" name="sid" value="G621" />
-        <input type="hidden" name="success_url"
-            value="http://localhost:8000/payment/success" />
-        <input type="hidden" name="cancel_url"
-            value="http://localhost:8000/payment/cancel" />
-        <input type="hidden" name="error_url"
-            value="http://localhost:8000/payment/error" />
-        <input type="hidden" name="checksum"
-            value="" />
-        <input type="hidden" id="id_amount" name="amount" value="{{game.price}}" />
-        {% if profile %}
-            <input class="shop_buy" id="{{game.id}}" type="button" onclick="buy(this.id)" value="Buy now!"/>
+        {% if owned %}
+          <p>Game already owned</p>
+          <form action="/gamescreen/{{ game.id }}/">
+            <input class="play-now-button" type="submit" value="Play now!" />
+          </form>
         {% else %}
-            <input value="Buy now!" disabled/>
-        {% endif %}
-       </form>
+        <p id="game_price">
+          Price: {{ game.price }}  €
+        </p>
+        <form action="//payments.webcourse.niksula.hut.fi/pay/" method="POST" id="{{game.name}}">
+          <input type="hidden" name="pid" value=""/>
+          <input type="hidden" name="sid" value="G621" />
+          <input type="hidden" name="success_url"
+              value="http://localhost:8000/payment/success" />
+          <input type="hidden" name="cancel_url"
+              value="http://localhost:8000/payment/cancel" />
+          <input type="hidden" name="error_url"
+              value="http://localhost:8000/payment/error" />
+          <input type="hidden" name="checksum"
+              value="" />
+          <input type="hidden" id="id_amount" name="amount" value="{{game.price}}" />
+          {% if profile %}
+              <input class="shop_buy" id="{{game.id}}" type="button" onclick="buy(this.id)" value="Buy now!"/>
+          {% else %}
+              <input class="shop_buy_disabled" value="Buy now!" disabled/>
+          {% endif %}
+        </form>
+      {% endif %}
     </div>
   {% endfor %}
-    <script type="text/javascript">
-            
-     </script>
 {% endblock %}
 

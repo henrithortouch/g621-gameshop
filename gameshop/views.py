@@ -37,16 +37,19 @@ def register(request):
             return redirect('/')
     else:
         form = CustomSignUpForm()
-    return render(request, "gameshop/register.html", {"form": form})
+    return render(request, "gameshop/authentication/register.html", {"form": form})
 
 def shop(request):
     template = loader.get_template("gameshop/shop.html")
-    gamelist = Game.objects.all()
+    games = Game.objects.all()
+
     if not request.user.is_anonymous:
-        profile = Profile.objects.filter(user = request.user)[0]
+        profile = profile = Profile.objects.get(user = request.user)
+        gamelist = map(lambda x: (x, profile.hasBought(x)), games)
     else:
-        profile = False
-    context = { "gamelist": gamelist, "profile": profile }
+        profile = None
+        gamelist = map(lambda x: (x, False), games)
+    context = { "gamelist": gamelist, "profile": profile, "user": request.user }
     return HttpResponse(template.render(context))
 
 @login_required(login_url='/login/')
@@ -80,12 +83,15 @@ def dev_inventory(request):
 
 #@login_required(login_url='/login/')
 def logout_page(request):
-    print("Attempt to logout")
     logout(request)
     return render(request, "gameshop/authentication/logout_page.html")
 
 def games(request):
-    profile = Profile.objects.filter(user = request.user)[0]
+    try:
+        profile = Profile.objects.get(user = request.user)
+    except Profile.DoesNotExist:
+        profile = None
+
     if request.method == "GET" and request.is_ajax():
         all_games = Game.objects.exclude(bought__user = request.user)
         return render(request, "gameshop/inventory/game_list.html", {"games": all_games, "text": "text"})
@@ -98,14 +104,15 @@ def games(request):
 def buy(request):
     data = dict(request.GET)
     game_id = data["game_id"][0]
-    game = Game.objects.filter(id = game_id)[0]
-    checksum = game.createChecksum()
-    json_data = json.loads(checksum)
-    pid = checksum.split(",")[1].split(":")[1].strip()
-    request.session[str(pid)] = game_id
-    print(game)
-    print(json_data)
-    return JsonResponse(json_data)
+    try:
+        game = Game.objects.filter(id = game_id)[0]
+        checksum = game.createChecksum()
+        json_data = json.loads(checksum)
+        pid = checksum.split(",")[1].split(":")[1].strip()
+        request.session[str(pid)] = game_id
+        return JsonResponse(json_data)
+    except Game.DoesNotExist:
+        return Http404
 
 def payment_error(request):
     secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
@@ -130,12 +137,15 @@ def payment(request):
         validation = True
     if result == "success" and validation:
         game_id = request.session.get(str(pid))
-        #print(game_id)
-        game = Game.objects.get(id = game_id)
+        try:
+            game = Game.objects.get(id = game_id)
+        except Game.DoesNotExist:
+            return Http404
         profile = Profile.objects.filter(user = request.user)[0]
-        if not profile in game.bought.all():
+        if not profile.hasBought(game):
             game.addOwner(profile)
             game.addSale()
+            #profile.reduceMoney!!!
         return render(request, "gameshop/payment/payment_success.html")
     elif result == "cancel" and validation:
         game_id = request.session["game_id"] = None

@@ -23,7 +23,7 @@ from gameshop import views
 
 urlpatterns = [
     url('admin/', admin.site.urls),
-    url(r'^$', home),
+    url(r'^$', home, name="home"),
     url(r'^about/$', about),
     url(r'^register/$', register),
     url(r'^login/$', auth_views.login, {'template_name': 'gameshop/authentication/login.html'}),

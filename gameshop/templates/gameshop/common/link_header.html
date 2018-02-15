@@ -1,6 +1,19 @@
 <div class="link-header">
-  <a href="/">Home</a>
-  <a href="/shop">Browse games</a>
-  <a href="/gamescreen">Game screen test</a>
-  <a href="/inventory/user">Inventory</a>
+  <div class="grid-container">
+    <div class="grid-item1"><a href="/">Home</a></div>
+    <div class="grid-item2"><a href="/shop">Browse games</a></div>
+    <div class="grid-item3"><a href="/gamescreen">Game screen test</a></div>
+    <div class="grid-item4"><a href="/inventory/user">Inventory</a></div>
+    
+    {% if not user.is_anonymous %}
+        {% if user %}
+        <div class="grid-login">Welcome, {{user}} <a href="/logout">Logout</a></div>
+        {% else %}
+        <div class="grid-login"><a href="/login">Login</a></div>
+        {% endif %}
+    {% else %}
+      <div class="grid-login"><a href="/login">Login</a></div>
+    {% endif %}
+    
+  </div>
 </div>
