@@ -6,12 +6,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
-from gameshop.models import Game, Developer, Profile, Payment
+from gameshop.models import Game, Developer, Profile, Game_state, Payment
 from gameshop.forms import CustomSignUpForm
 import json
 from hashlib import md5
 
-import json
 
 def about(request):
     return HttpResponse("about page")
@@ -59,12 +58,10 @@ def gamescreen(request, game_id=None):
         game = Game.objects.get(id = game_id)
     except Game.DoesNotExist:
         return HttpResponseNotFound("Specified game was not found")
-
     url = game.url
-    template = loader.get_template("gameshop/gamescreen.html")
     hasGame = request.user.profile.hasBought(game)
     context = { "game": game, "user": request.user, "hasGame": hasGame, "game_url": url}
-    return HttpResponse(template.render(context))
+    return render(request, "gameshop/gamescreen.html", context)
 
 @login_required(login_url='/login/')
 def user_inventory(request):
@@ -157,13 +154,86 @@ def payment(request):
         #print(game_id)
         return render(request, "gameshop/payment/payment_error.html")
 
-#GET request handler
+# Handlers for game Save, Score, Load requests
 @login_required(login_url='/login/')
-def machine_save_request(request):
-    #Not ready yet, do something to this
-        data = dict(request.POST)
-        print(data)
-        if request.user.is_authenticated :
-            u_id = request.user.id
-            state = Game_state.objects.get(user__id=u_id)
-        return Http404()
+def machine_save(request, game_id=None):
+    data = dict(request.POST)
+    #TODO: Make items a optional parameter to save
+    try:
+        try:
+            items = data['playerItems[]']
+            #Convert items to JSON string
+            items_json = json.dumps(items)
+        except KeyError:
+            #No items given in request so make it none
+            items_json = None
+
+        score = data['score'][0]
+        game = Game.objects.get(id = game_id)
+        profile = Profile.objects.get(user = request.user)
+        state = Game_state.objects.get(profile = profile, game = game)
+        state.save_state(score = score, items = items_json)
+    except KeyError:
+        return HttpResponse('No post data', status=400)
+    except Game.DoesNotExist:
+        return HttpResponse('Game not found',status=500)
+    except Profile.DoesNotExist:
+        return HttpResponse('User not found',status=500)
+    except Game_state.DoesNotExist:
+        return HttpResponse('Game state not found',status=500)
+    return HttpResponse('OK', status=200)
+
+
+@login_required(login_url='/login/')
+def machine_score(request, game_id=None):
+    data = dict(request.POST)
+    try:
+        score = data['score'][0]
+        game = Game.objects.get(id = game_id)
+        profile = Profile.objects.get(user = request.user)
+        state = Game_state.objects.get(profile = profile, game = game)
+        state.submit_score(score = score)
+    except KeyError:
+        return HttpResponse('No post data', status=400)
+    except Game.DoesNotExist:
+        return HttpResponse('Game not found',status=500)
+    except Profile.DoesNotExist:
+        return HttpResponse('User not found',status=500)
+    except Game_state.DoesNotExist:
+        return HttpResponse('Game state not found',status=500)
+    return HttpResponse('OK', status=200)
+
+
+@login_required(login_url='/login/')
+def machine_load(request, game_id=None):
+    try:
+        #TODO: Make items a optional parameter
+        game = Game.objects.get(id = game_id)
+        profile = Profile.objects.get(user = request.user)
+        state = Game_state.objects.get(profile = profile, game = game)
+        data = state.load_state()
+        if data[1] == 'NOSAVE':
+            print("NOTHING SAVED")
+            return HttpResponse("No valid save detected", status=204)
+    except KeyError:
+        return HttpResponse('No post data', status=400)
+    except Game.DoesNotExist:
+        return HttpResponse('Game not found',status=500)
+    except Profile.DoesNotExist:
+        return HttpResponse('User not found',status=500)
+    except Game_state.DoesNotExist:
+        return HttpResponse('Game state not found',status=500)
+    
+    #Convert JSON string items to objects
+    if data[1] is not None:
+        response = {
+            'score': data[0],
+            'playerItems': json.loads(data[1]),
+        }
+    else:
+        response = {
+            'score': data[0],
+            'playerItems': ''
+        }
+
+    return HttpResponse(json.dumps(response), status=200)
