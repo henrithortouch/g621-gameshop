@@ -47,6 +47,8 @@ def home(request):
 
     return HttpResponse(template.render(context))
 
+# View for registering your acocunt. Account details are submitted as a custom
+# Django form. See forms.py for further details.
 def register(request):
     if request.method == "POST":
         form = CustomSignUpForm(request.POST)
@@ -198,6 +200,9 @@ def games(request):
         return HttpResponse(amount, content_type="text/plain")
     return render(request, "gameshop/games.html", context)
 
+# This view is accessed when the user attempts to buy a game. A ajax call is triggered
+# when 'Buy now!' button is pressed. All required parameters for payment processing
+# is then passed as a JsonResponse for data to be populated in the payment form.
 def buy(request):
     data = dict(request.GET)
     game_id = data["game_id"][0]
@@ -213,6 +218,9 @@ def buy(request):
     except Game.DoesNotExist:
         return Http404
 
+# A view for processing the outcome of the payment process, given that it has passed
+# the 'Simple Payments' verification phase. Three different outcomes produce their
+# respectable views. 
 def payment(request):
     secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
     data = dict(request.GET)
@@ -222,7 +230,7 @@ def payment(request):
     checksumstr = "pid={}&ref={}&result={}&token={}".format(pid, ref, result, secret_key)
     m = md5(checksumstr.encode("ascii"))
     checksum = m.hexdigest()
-    validate_checksum = data["checksum"][0]
+    validate_checksum = data["checksum"][0] #Checksum received from the request
     validation = False
     if validate_checksum == checksum:
         validation = True
@@ -233,7 +241,7 @@ def payment(request):
         except Game.DoesNotExist:
             return Http404
         profile = Profile.objects.filter(user = request.user)[0]
-        if not profile.hasBought(game):
+        if not profile.hasBought(game): #At this stage we do not support purchasing multiple copies
             game.addOwner(profile)
             game.addSale()
 
