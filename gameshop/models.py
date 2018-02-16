@@ -127,6 +127,9 @@ class Game_state(models.Model):
         return "\nGame: " + self.game.name + "\n" \
             + "Profile: " + self.profile.user.username
 
+# Payment class is responsible for knowing which payment with a specific payment id
+# (pid) was made and what game is connected to this pid. This data is used when
+# showing the completed purchase.
 class Payment(models.Model):
     game_id = models.TextField(max_length=None, default="NULL")
     pid = models.TextField(max_length=None, default="NULL")
