@@ -1,38 +1,72 @@
  $(document).ready(function() {
             "use strict";
-            // Only listens to events, doesn't do anything else for now.
-            // Still needs django tags to execute python code for database entries
             var iframe = document.getElementById('game_frame')
 
             window.addEventListener("message", function(evt) {
                 if(evt.data.messageType === "LOAD_REQUEST") {
+                    var response = $.ajax({
+                        type: "GET",
+                        beforeSend: function(request) {
+                            request.setRequestHeader("X-CSRFToken", document.getElementsByName('csrfmiddlewaretoken')[0].value);
+                        },
+                        url: window.location + "load/",
+                        success: function(data, status, xhttp) {
+                            console.log(status)
+                            if (status === "success"){
+                                console.log(data)
+                                var obj = JSON.parse(data)
+                                var message = {
+                                    messageType: "LOAD",
+                                    gameState: obj,
+                                }
+                                iframe.contentWindow.postMessage(message, "*")
+                            }
+                        },
+                    });
                     console.log("LOAD")
-
                 } else if(evt.data.messageType === "SAVE") {
-                    var state = evt.data.gameState
-                    var msg = state
-
+                    var msg = evt.data.gameState
+                    console.log(msg)
                     var response = $.ajax({
                         type: "POST",
                         beforeSend: function(request) {
                             request.setRequestHeader("X-CSRFToken", document.getElementsByName('csrfmiddlewaretoken')[0].value);
                         },
-                        url: window.location + "save_state/",
+                        url: window.location + "save/",
                         data: msg,
                         success: function(data, status, xhttp) {
-                            console.log("SUCCESS jee jee")
+                            console.log("status")
+                            //TODO: Send error to iframe if not success
                         },
                     });
-
-                    // Posts to this fucking window get a better function
                     //var response = window.postMessage(msg, window.location + "save_state/")
-                    console.log(response)
                     console.log("SAVE")
 
                 } else if(evt.data.messageType === "SCORE") {
+                    var score = evt.data.score
+                    var response = $.ajax({
+                        type: "POST",
+                        beforeSend: function(request) {
+                            request.setRequestHeader("X-CSRFToken", document.getElementsByName('csrfmiddlewaretoken')[0].value);
+                        },
+                        url: window.location + "score/",
+                        data: {score: score},
+                        success: function(data, status, xhttp) {
+                            if (status === "success"){
+                                console.log("SUCCESS")
+                            } else {
+                                //TODO: Send error to iframe
+                                console.log(data)
+                                console.log("FAILURE")
+                            }
+                        },
+                    });
                     // Saves score to highscores
                     console.log("SCORE")
-                }
+                } else if(evt.data.messageType === "SETTING"){
+                    $("#game_frame").attr("width", evt.data.options.width)
+                    $("#game_frame").attr("height", evt.data.options.height)
+                } // else do nothing, maybe send a error to iframe?
             });
 
             // simple function to post to iframe, doesn't really do anything yet

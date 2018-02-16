@@ -15,6 +15,7 @@
 {% endblock %}
 
 {% block content %}
+{% csrf_token %}
   {% if hasGame %}
     <div id="highscores">
       <h3>Highscores</h3>

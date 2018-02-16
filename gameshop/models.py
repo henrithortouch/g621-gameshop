@@ -54,9 +54,9 @@ class Game(models.Model):
     sales = models.IntegerField(default=0)
     price = models.IntegerField(default=0)
     owner = models.ForeignKey(Developer, on_delete=models.CASCADE)
-    # IMPORTANT REMEMBER TO NOT SET DEFAULT IN PRODUCTION, IT'S ONLY FOR TESTING PURPOSES
+    #TODO: IMPORTANT REMEMBER TO NOT SET DEFAULT IN PRODUCTION, IT'S ONLY FOR TESTING PURPOSES
     url = models.CharField(max_length=300, default='http://webcourse.cs.hut.fi/example_game.html')
-    bought = models.ManyToManyField(Profile, blank=True)
+    bought = models.ManyToManyField(Profile, blank=True, through="Game_state")
 
     def addSale(self):
         #self.select_for_update()
@@ -70,6 +70,7 @@ class Game(models.Model):
 
     def createChecksum(self):
         secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
+        # sys.maxsize?
         pid = random.SystemRandom().randint(0, 100000)
         checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, "G621", self.price, secret_key)
         m = md5(checksumstr.encode("ascii"))
@@ -84,18 +85,42 @@ class Game(models.Model):
 
 class Game_state(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    save_score = models.TextField(max_length=None, default="NOSAVE")
-    save_items = models.TextField(max_length=None, default="NOSAVE")
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    save_score = models.FloatField(default=0)
+    save_items = models.TextField(max_length=None, null=True)
+    submitted_score = models.FloatField(null=True)
+
+    class Meta:
+        unique_together = (("game", "profile"),)
 
     def save_state(self, score, items):
         self.save_score = score
         self.save_items = items
         self.save()
+    
+    def submit_score(self, score):
+        self.submitted_score = score
+        self.save()
 
     def load_state(self):
-        return self.save_state
+        return (self.save_score, self.save_items)
 
+    def __str__(self):
+        return "\nGame: " + self.game.name + "\n" \
+            + "Profile: " + self.profile.user.username
+
+class Payment(models.Model):
+    game_id = models.TextField(max_length=None, default="NULL")
+    pid = models.TextField(max_length=None, default="NULL")
+
+    def save_payment(self, game_id, pid):
+        self.game_id = game_id
+        self.pid = pid
+        self.save()
+
+    def get_data(self):
+        result = """{"game_id": "%s", "pid": %s}""" % (self.game_id, self.pid)
+        return result
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

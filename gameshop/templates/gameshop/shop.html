@@ -24,7 +24,10 @@
 
 {% block content %}
 {% csrf_token %}
-  {% for game, owned in gamelist %}
+{% if profile is False %}
+<div class="login_prompt"><small><a href="/login/">Sign in</a> to purchase games</small></div>
+{% endif %}  
+{% for game, owned in gamelist %}
     <div class="store-block">
       <h3 id="game_name">
         {{ game.name }}
@@ -59,7 +62,7 @@
           {% if profile %}
               <input class="shop_buy" id="{{game.id}}" type="button" onclick="buy(this.id)" value="Buy now!"/>
           {% else %}
-              <input value="Buy now!" disabled/>
+              <input class="shop_buy_disabled" value="Buy now!" disabled/>
           {% endif %}
         </form>
       {% endif %}
