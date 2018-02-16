@@ -108,8 +108,52 @@ def studio(request):
 
 @login_required(login_url='/login/')
 def editgame(request, game_id=None):
+    if request.method == "DELETE":
+        context = getUserContext(request.user)
+        game = getGame(game_id)
+        if game:
+            if context["developer"].owns(game):
+                game.delete()
+                return redirect("/studio/")
+            else:
+                return Unauthorized()
+        else:
+            return Http404()
+
     if request.method == "POST":
-        return Http404()
+        form = SubmitGameForm(request.POST)
+        context = getUserContext(request.user)
+
+        if form.is_valid() and context["developer"]:
+            name = form.cleaned_data.get('name')
+            description = form.cleaned_data.get('description')
+            price = form.cleaned_data.get("price")
+            url = form.cleaned_data.get("url")
+
+            if game_id:
+                game = getGame(game_id)
+                if game:
+                    if context["developer"].owns(game):
+                        game.name = name
+                        game.description = description
+                        game.price = price
+                        game.url = url
+                        game.save()
+                    else:
+                        return Unauthorized()
+                else:
+                    return Http404("Specified game was not found")
+            else:
+                game = Game.objects.create(
+                    name=name, 
+                    description=description, 
+                    price=price, 
+                    url=url, 
+                    owner=context["developer"])
+                game.save()
+            return redirect('/studio/')
+        else:
+            return redirect('/studio/')
 
     template = "gameshop/inventory/editgame.html"
     game = getGame(game_id)
@@ -136,8 +180,6 @@ def editgame(request, game_id=None):
     else:
         return Http404()
     
-
-
     return Http401("Unauthorized. You do not own this game.")
 
 #@login_required(login_url='/login/')
@@ -146,10 +188,7 @@ def logout_page(request):
     return render(request, "gameshop/authentication/logout_page.html")
 
 def games(request):
-    try:
-        profile = Profile.objects.get(user = request.user)
-    except Profile.DoesNotExist:
-        profile = None
+    context = getUserContext(request.user)
 
     if request.method == "GET" and request.is_ajax():
         all_games = Game.objects.exclude(bought__user = request.user)
@@ -158,7 +197,7 @@ def games(request):
         amount = 20
         profile.addMoney(amount)
         return HttpResponse(amount, content_type="text/plain")
-    return render(request, "gameshop/games.html", {"profile": profile})
+    return render(request, "gameshop/games.html", context)
 
 def buy(request):
     data = dict(request.GET)
