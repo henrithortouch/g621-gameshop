@@ -24,7 +24,16 @@
         {{ game.description }}
       </p>
       <p>
-        sales: {{ game.sales }}
+        Genre: {{ game.genre }}
+      </p>
+      <p>
+        Price per unit: {{ game.price }}
+      </p>
+      <p>
+        Sales: {{ game.sales }}
+      </p>
+      <p>
+        URL: {{ game.url }}
       </p>
       <form action="/studio/{{ game.id }}/">
         <input class="play-now-button" type="submit" value="Edit" />

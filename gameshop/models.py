@@ -47,10 +47,17 @@ class Developer(models.Model):
     def __str__(self):
         return "\nDev profile for user " + self.profile.user.username
 
+class Genre(models.Model):
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
 class Game(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True)
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=500)
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
     sales = models.IntegerField(default=0)
     price = models.IntegerField(default=0)
     owner = models.ForeignKey(Developer, on_delete=models.CASCADE)
