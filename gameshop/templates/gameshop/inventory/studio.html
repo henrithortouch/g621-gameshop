@@ -14,24 +14,16 @@
 {% endblock %}
 
 {% block content %}
-  {% for game in profile.owned %}
+  {% for game in profile.gamesOwned %}
     <div class="store-block">
       <h3>{{ game.name }}</h3>
       <p class="game-description">
         {{ game.description }}
       </p>
-      <p>
-        Genre: {{ game.genre.name }}
-      </p>
-      <p>
-        Price per unit: {{ game.price }}
-      </p>
-      <p>
-        Sales: {{ game.sales }}
-      </p>
-      <p>
-        URL: {{ game.url }}
-      </p>
+      <p>Genre: {{ game.genre.name }}</p>
+      <p>Price per unit: {{ game.price }}</p>
+      <p>Sales: {{ game.sales }}</p>
+      <p>URL: {{ game.url }}</p>
       <form action="/studio/{{ game.id }}/">
         <input class="play-now-button" type="submit" value="Edit" />
       </form>

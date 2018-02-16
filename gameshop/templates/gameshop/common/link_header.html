@@ -8,9 +8,14 @@
     {% endif %}
 
     {% if profile %}
-      <div class="grid-login">Welcome, {{ profile.user.username  }} <a href="/logout">Logout</a></div>
+      <div class="grid-login">
+        Welcome, {{ profile.user.username }} 
+        <a href="/logout">Logout</a>
+      </div>
     {% else %}
-      <div class="grid-login"><a href="/login">Login</a></div>
+      <div class="grid-login">
+        <a href="/login">Login</a>
+      </div>
     {% endif %}
   </div>
 </div>

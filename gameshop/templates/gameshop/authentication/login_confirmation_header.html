@@ -1,5 +1,8 @@
 {% if profile %}
-    <p>Hello {{ profile.user.username }}! <small><a href="/logout">Log out</a></small></p>
+  <p>
+    Hello {{ profile.user.username }}! <small>
+    <a href="/logout">Log out</a></small>
+  </p>
 {% else %}
-    <p><small>You are not logged in. <a href="/login">Please log in</a></small><p>
+  <p><small>You are not logged in. <a href="/login">Please log in</a></small><p>
 {% endif %}

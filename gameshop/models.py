@@ -7,12 +7,11 @@ import random, json
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    money = models.IntegerField(default=0)
 
-    def games(self):
+    def gamesBought(self):
         return Game.objects.filter(bought=self).all()
 
-    def owned(self):
+    def gamesOwned(self):
         return Game.objects.filter(owner=Developer.objects.get(profile=self))
 
     def hasBought(self, game):
@@ -26,22 +25,6 @@ class Profile(models.Model):
         self.games_bought.add(game)
         game.addSale()
         self.save()
-
-    def addMoney(self, amount):
-        if amount > 0:
-            self.money += amount
-            self.save()
-        else:
-            raise Exception("Only positive additions allowed")    
-
-    def takeMoney(self, amount):
-        if amount > 0 and self.money >= amount:
-            self.money -= amount
-            self.save()
-        else:
-            raise Exception("Invalid amount or insufficient funds")
-
-    #def purchase(self, game, price):
 
     def __str__(self):
         return "\nUsername: " +self.user.username
@@ -77,10 +60,8 @@ class Game(models.Model):
     bought = models.ManyToManyField(Profile, blank=True, through="Game_state")
 
     def addSale(self):
-        #select_for_update()
         self.sales = self.sales + 1
         self.save()
-        #transaction.commit()
 
     def addOwner(self, profile):
         state = Game_state(game=self, profile=profile)
@@ -95,7 +76,6 @@ class Game(models.Model):
         checksum = m.hexdigest()
         result = """{"%s": "%s", "%s": %s, "%s": "%s"}""" % ("checksum", checksum, "pid", pid, "name", self.name)
         return result
-        
 
     def __str__(self):
         return "\nName: " + self.name + "\n" \
@@ -106,7 +86,7 @@ class Game_state(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     save_score = models.FloatField(default=0)
     save_items = models.TextField(max_length=None, null=True)
-    submitted_score = models.FloatField(null=True)
+    submitted_score = models.FloatField(default=0)
 
     class Meta:
         unique_together = (("game", "profile"),)

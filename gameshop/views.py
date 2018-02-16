@@ -9,7 +9,7 @@ from django import forms
 
 from gameshop.forms import CustomSignUpForm, SubmitGameForm
 from gameshop.models import Game, Developer, Profile, Game_state, Payment, Genre
-from gameshop.helpers import getUserContext, getGame, getGenre
+from gameshop.helpers import getUserContext, getGame, getGenre, getHighScores
 
 import json
 from hashlib import md5
@@ -65,16 +65,16 @@ def shop(request, genre=None):
 
 @login_required(login_url='/login/')
 def gamescreen(request, game_id=None):
-    try:
-        game = Game.objects.get(id = game_id)
-    except Game.DoesNotExist:
-        return HttpResponseNotFound("Specified game was not found")
+    game = get_object_or_404(Game, pk=game_id)
     url = game.url
+
     hasGame = request.user.profile.hasBought(game)
+
     context = getUserContext(request.user)
     context["game"] = game
     context["hasGame"] = hasGame
     context["game_url"] = url
+    context["highscores"] = getHighScores(game)
     return render(request, "gameshop/gamescreen.html", context)
 
 @login_required(login_url='/login/')
@@ -102,8 +102,7 @@ def editgame(request, game_id=None):
             return redirect("/studio/")
         else:
             return Unauthorized()
-
-    if request.method == "POST":
+    elif request.method == "POST":
         form = SubmitGameForm(request.POST)
 
         if form.is_valid() and context["developer"]:
@@ -137,26 +136,26 @@ def editgame(request, game_id=None):
             return redirect('/studio/')
         else:
             return redirect('/studio/')
-
-    template = "gameshop/inventory/editgame.html"
-    game = getGame(game_id)
-    
-    if context["developer"]:
-        if game: #If modifying an existing game
-            if context["developer"].owns(game):
+    elif request.method == "GET":
+        template = "gameshop/inventory/edit_game.html"
+        game = getGame(game_id)
+        
+        if context["developer"]:
+            if game: #If modifying an existing game
+                if context["developer"].owns(game):
+                    form = SubmitGameForm()
+                    form.fields["name"].initial = game.name
+                    form.fields["description"].initial = game.description
+                    form.fields["genre"].initial = game.genre
+                    form.fields["price"].initial = game.price
+                    form.fields["url"].initial = game.url
+                    context["game"] = game
+                    context["form"] = form
+                return render(request, template, context)
+            else:
                 form = SubmitGameForm()
-                form.fields["name"].initial = game.name
-                form.fields["description"].initial = game.description
-                form.fields["genre"].initial = game.genre
-                form.fields["price"].initial = game.price
-                form.fields["url"].initial = game.url
-                context["game"] = game
                 context["form"] = form
-            return render(request, template, context)
-        else:
-            form = SubmitGameForm()
-            context["form"] = form
-            return render(request, template, context)
+                return render(request, template, context)
     
     return Http404()
 
