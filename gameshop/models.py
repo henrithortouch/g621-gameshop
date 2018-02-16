@@ -72,8 +72,8 @@ class Game(models.Model):
         #transaction.commit()
 
     def addOwner(self, profile):
-        self.bought.add(profile)
-        self.save()
+        state = Game_state(game=self, profile=profile)
+        state.save()
 
     def createChecksum(self):
         secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
