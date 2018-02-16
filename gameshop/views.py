@@ -42,11 +42,8 @@ def about(request):
     return HttpResponse("about page")
 
 def home(request):
-    if request.user != None:
-        print(request.user.username + " is logged in")
-
     template = loader.get_template("gameshop/home.html")
-    context = {"user": request.user.username}
+    context = getUserContext(request.user)
 
     return HttpResponse(template.render(context))
 
