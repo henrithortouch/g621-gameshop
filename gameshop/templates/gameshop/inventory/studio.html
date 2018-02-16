@@ -14,9 +14,6 @@
 {% endblock %}
 
 {% block content %}
-  <div>
-    <a href="/inventory">My Games</a>
-  </div>
   {% for game in profile.owned %}
     <div class="store-block">
       <h3>{{ game.name }}</h3>

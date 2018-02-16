@@ -12,11 +12,6 @@
   {% if not profile %}
     <p>Please log in!</p>
   {% else %}
-    {% if developer %}
-    <div class="inventory-view-toggle">
-      <a href="/studio">My Studio</a>
-    </div>
-    {% endif %}
     <div id="inventory">
       {% for game in profile.games %}
         <div class="store-block">
