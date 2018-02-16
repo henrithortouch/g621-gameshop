@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django import forms
 
 from gameshop.forms import CustomSignUpForm, SubmitGameForm
-from gameshop.models import Game, Developer, Profile, Game_state, Payment
+from gameshop.models import Game, Developer, Profile, Game_state, Payment, Genre
 
 import json
 from hashlib import md5
@@ -35,6 +35,9 @@ def getGame(game_id):
         return Game.objects.get(id=game_id)
     except Game.DoesNotExist:
         return None
+
+def getGenre(genre):
+    return get_object_or_404(Genre, name=genre)
 
 def about(request):
     return HttpResponse("about page")
@@ -65,7 +68,8 @@ def register(request):
 def shop(request, genre=None):
     template = loader.get_template("gameshop/shop.html")
     if genre:
-        games = Game.objects.filter(genre=genre)
+        g = get_object_or_404(Genre, name=genre)
+        games = Game.objects.filter(genre=g)
     else:
         games = Game.objects.all()
 
@@ -78,7 +82,8 @@ def shop(request, genre=None):
 
     context = getUserContext(request.user)
     context["gamelist"] = gamelist
-
+    context["genres"] = Genre.objects.all()
+    
     return HttpResponse(template.render(context))
 
 @login_required(login_url='/login/')
@@ -89,7 +94,10 @@ def gamescreen(request, game_id=None):
         return HttpResponseNotFound("Specified game was not found")
     url = game.url
     hasGame = request.user.profile.hasBought(game)
-    context = { "game": game, "user": request.user, "hasGame": hasGame, "game_url": url}
+    context = getUserContext(request.user)
+    context["game"] = game
+    context["hasGame"] = hasGame
+    context["game_url"] = url
     return render(request, "gameshop/gamescreen.html", context)
 
 @login_required(login_url='/login/')
@@ -124,7 +132,7 @@ def editgame(request, game_id=None):
         if form.is_valid() and context["developer"]:
             name = form.cleaned_data.get('name')
             description = form.cleaned_data.get('description')
-            genre = form.cleaned_data.get('genre')
+            genre = getGenre(form.cleaned_data.get('genre'))
             price = form.cleaned_data.get("price")
             url = form.cleaned_data.get("url")
 

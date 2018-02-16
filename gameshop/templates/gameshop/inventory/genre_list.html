@@ -1,9 +1,12 @@
 <table class="genre-table">
   <tbody>
-    {% for game in games %}
-      <tr>
-        <td>{{ game.name }}</td>
-      </tr>  
+    <form action="/shop/">
+      <input class="genre-selection" type="submit" value="All">
+    </form>
+    {% for genre in genres %}
+      <form action="/shop/{{ genre.name }}/">
+        <input class="genre-selection" type="submit" value="{{ genre.name }}">
+      </form>
     {% endfor %}
   </tbody>
 </table>

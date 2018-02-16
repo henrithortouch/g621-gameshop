@@ -26,7 +26,10 @@
 {% csrf_token %}
 {% if profile is False %}
 <div class="login_prompt"><small><a href="/login/">Sign in</a> to purchase games</small></div>
-{% endif %}  
+{% endif %}
+
+{% include "gameshop/inventory/genre_list.html" %}
+
 {% for game, owned in gamelist %}
     <div class="store-block">
       <h3 id="game_name">

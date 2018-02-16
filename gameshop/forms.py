@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from gameshop.models import Game
+from gameshop.models import Game, Genre
 
 class CustomSignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length = 30, required = False, help_text = "Optional.")
@@ -19,7 +19,7 @@ class CustomSignUpForm(UserCreationForm):
 class SubmitGameForm(forms.Form):
     name = forms.CharField(max_length=50, required=True)
     description = forms.CharField(max_length=500, required=True)
-    genre = forms.CharField(max_length=20, required=True)
+    genre = forms.ModelChoiceField(queryset=Genre.objects.all())
     price = forms.IntegerField(required=True)
     url = forms.CharField(max_length=200, required=True)
 

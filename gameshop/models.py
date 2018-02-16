@@ -46,6 +46,12 @@ class Profile(models.Model):
     def __str__(self):
         return "\nUsername: " +self.user.username
 
+class Genre(models.Model):
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
 class Developer(models.Model):
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
     studioname = models.CharField(max_length=50)
@@ -60,7 +66,7 @@ class Game(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True)
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=500)
-    genre = models.CharField(max_length=20, default="Undefined")
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
 
     sales = models.IntegerField(default=0)
     price = models.IntegerField(default=0)
