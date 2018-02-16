@@ -30,7 +30,7 @@
 
 {% include "gameshop/inventory/genre_list.html" %}
 
-{% for game, owned in gamelist %}
+{% for game, isOwned in gamelist %}
     <div class="store-block">
       <h3 id="game_name">
         {{ game.name }}
@@ -44,8 +44,8 @@
       <p>
         Genre: {{ game.genre }}
       </p>
-        {% if owned %}
-          <p>Game already owned</p>
+        {% if isOwned %}
+          <p>You already own this game.</p>
           <form action="/gamescreen/{{ game.id }}/">
             <input class="play-now-button" type="submit" value="Play now!" />
           </form>
@@ -75,4 +75,3 @@
     </div>
   {% endfor %}
 {% endblock %}
-

@@ -19,7 +19,13 @@
   {% if hasGame %}
     <div id="highscores">
       <h3>Highscores</h3>
-      <p>Placeholder text, insert highscores here</p>
+      <ul>
+      {% for name, score in highscores %}
+        <li>
+          {{ name }}: {{ score }}
+        </li>
+      {% endfor %}
+      </ul>
     </div>
     <iframe id='game_frame' height="1000" width="1000" src="{{ game_url }}"></iframe>
   {% else %}

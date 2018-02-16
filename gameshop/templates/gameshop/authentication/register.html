@@ -7,30 +7,30 @@
 
 {% block title %}G621 - Register Account{% endblock %}
 
-{%  block pageHeader %}
+{% block pageHeader %}
   <div class="page-header">
-   <h1>Welcome to G621</h1>
-   <h4>Register your free G621 account</h4>
+    <h1>Welcome to G621</h1>
+    <h4>Register your free G621 account</h4>
   </div>
 {% endblock %}
 
 {% block content %}
-    <div id="login_div" />
-        <form action="" method="post">
+  <div id="login_div">
+      <form action="" method="post">
         {% csrf_token %}
-        <!-- {{ form.as_p }} -->
         {% for field in form %}
-      <p>
-        {{ field.label_tag }}<br>
-        {{ field }}
-        {% if field.help_text %}
-          <small class="field_help_text">{{ field.help_text | safe }}</small>
-        {% endif %}
-        {% for error in field.errors %}
-          <p style="color: red">{{ error }}</p>
+          <p>
+            {{ field.label_tag }}<br>
+            {{ field }}
+            {% if field.help_text %}
+              <small class="field_help_text">{{ field.help_text | safe }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+              <p style="color: red">{{ error }}</p>
+            {% endfor %}
+          </p>
         {% endfor %}
-      </p>
-    {% endfor %}
         <button class="submit" type="submit">Register Account</button>
-        </form>
+      </form>
+  </div>
 {% endblock %}
