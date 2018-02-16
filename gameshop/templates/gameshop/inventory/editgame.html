@@ -1,0 +1,53 @@
+{% extends "gameshop/generic.html" %}
+
+{% block title %}G621 - Edit Game{% endblock %}
+
+{% block script %}
+  {% load staticfiles %}
+  <script type="text/javascript" src="{% static 'lib/jquery-3.2.1.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'lib/js-cookie.js' %}"></script>
+  <script type="text/javascript" src="{% static 'gameshop/delete_game.js' %}"></script>
+{% endblock %}
+
+{% block pageHeader %}
+  <div class="page-header">
+    <h1>
+      {% if game %}
+        {{ game.name }} - Edit properties
+      {% else %}
+        Submit a game
+      {% endif %}
+    </h1>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="edit-game-form">
+    <h2>
+      Game information
+    </h2>
+    <form action="" method="POST">
+      {% csrf_token %}
+
+      {% for field in form %}
+        <p>
+        {{ field.label_tag }}<br>
+        {{ field }}
+        </p>
+      {% endfor %}
+
+      {% if game %}
+        <button class="submit-game" type="submit">Update information</button>
+      {% else %}
+        <button class="submit-game" type="submit">Submit game</button>
+      {% endif %}
+    </form>
+    {% if game %}
+      <br>
+      <h2>
+        Other options
+      </h2>
+      <input class="play-now-button" id="{{game.id}}" type="button" onclick="delete_game(this.id)" value="Delete game from site"/>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "gameshop/generic.html" %}
+
+{% block pageHeader %}
+  <div class="page-header">
+    <h1>
+      My games
+    </h1>
+  </div>
+{% endblock %}
+
+{% block content %}
+  {% if not profile %}
+    <p>Please log in!</p>
+  {% else %}
+    {% if developer %}
+    <div class="inventory-view-toggle">
+      <a href="/studio">My Studio</a>
+    </div>
+    {% endif %}
+    <div id="inventory">
+      {% for game in profile.games %}
+        <div class="store-block">
+          <h3>{{ game.name }}</h3>
+          <p class="game-description">
+            {{ game.description }}
+          </p>
+          <form action="/gamescreen/{{ game.id }}/">
+            <input class="play-now-button" type="submit" value="Play now!" />
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endblock %}

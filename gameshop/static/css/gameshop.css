@@ -59,8 +59,30 @@ h2, h3, h4, h5, h6, h7 {
     display: inline-table;
 }
 
+.play-now-button, .submit-game {
+    background-color: var(--head);
+    color: white;
+    display: inline-block;
+    text-decoration: none;
+    padding: 8px 16px;
+    border: solid 1px white;
+}
+
+.shop_buy {
+    background-color: var(--title-bg);
+    color: white;
+    display: inline-block;
+    text-decoration: none;
+    padding: 8px 16px;
+    border: solid 1px white;
+}
+
 a {
     color: var(--link);
+}
+
+form {
+    color: var(--head);
 }
 
 body {
@@ -94,29 +116,9 @@ body {
 .grid-container {
     display: inline-grid;
     grid-template-areas:
-        "item1 item2 item3 item4"
-        "login login login login";
+        "item1 item2 item3 item4 item5"
+        "login login login login login";
     grid-column-gap: 20px;
-}
-
-.grid-item1 {
-    grid-area: item1;
-}
-
-.grid-item2 {
-    grid-area: item2;
-}
-
-.grid-item3 {
-    grid-area: item3;
-}
-
-.grid-item4 {
-    grid-area: item4;
-}
-
-.grid-login {
-    grid-area: login;
 }
 
 #game_name {
