@@ -159,11 +159,6 @@ body {
     width:110px;
 }
 
-.wallet {
-    float: right;
-    color: var(--head)
-}
-
 .field_help_text {
     /*color: var(--head);*/
     font-size: 10pt;
