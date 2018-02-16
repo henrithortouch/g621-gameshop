@@ -116,33 +116,9 @@ body {
 .grid-container {
     display: inline-grid;
     grid-template-areas:
-        "item1 item2 item3 item4"
-        "login login login login";
+        "item1 item2 item3 item4 item5"
+        "login login login login login";
     grid-column-gap: 20px;
-}
-
-.grid-item1 {
-    grid-area: item1;
-}
-
-.grid-item2 {
-    grid-area: item2;
-}
-
-.grid-item3 {
-    grid-area: item3;
-}
-
-.grid-item4 {
-    grid-area: item4;
-}
-
-.grid-item5 {
-    grid-area: item5;
-}
-
-.grid-login {
-    grid-area: login;
 }
 
 #game_name {

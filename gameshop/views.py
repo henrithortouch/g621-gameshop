@@ -15,7 +15,7 @@ from hashlib import md5
 
 
 def getUserContext(user):
-    if not user:
+    if not user or user.is_anonymous:
         return { "profile": None, "developer": None }
         
     try:
