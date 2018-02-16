@@ -38,6 +38,9 @@
       <p id="game_description">
         {{ game.description }}
       </p>
+      <p>
+        Genre: {{ game.genre }}
+      </p>
         {% if owned %}
           <p>Game already owned</p>
           <form action="/gamescreen/{{ game.id }}/">

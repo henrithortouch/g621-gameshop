@@ -30,9 +30,18 @@ class Profile(models.Model):
     def addMoney(self, amount):
         if amount > 0:
             self.money += amount
-            self.save()    
-    
-    #def purchase(self, game):
+            self.save()
+        else:
+            raise Exception("Only positive additions allowed")    
+
+    def takeMoney(self, amount):
+        if amount > 0 and self.money >= amount:
+            self.money -= amount
+            self.save()
+        else:
+            raise Exception("Invalid amount or insufficient funds")
+
+    #def purchase(self, game, price):
 
     def __str__(self):
         return "\nUsername: " +self.user.username
@@ -47,26 +56,22 @@ class Developer(models.Model):
     def __str__(self):
         return "\nDev profile for user " + self.profile.user.username
 
-class Genre(models.Model):
-    name = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.name
-
 class Game(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True)
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=500)
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
+    genre = models.CharField(max_length=20, default="Undefined")
+
     sales = models.IntegerField(default=0)
     price = models.IntegerField(default=0)
+
     owner = models.ForeignKey(Developer, on_delete=models.CASCADE)
     #TODO: IMPORTANT REMEMBER TO NOT SET DEFAULT IN PRODUCTION, IT'S ONLY FOR TESTING PURPOSES
     url = models.CharField(max_length=300, default='http://webcourse.cs.hut.fi/example_game.html')
     bought = models.ManyToManyField(Profile, blank=True, through="Game_state")
 
     def addSale(self):
-        #self.select_for_update()
+        #select_for_update()
         self.sales = self.sales + 1
         self.save()
         #transaction.commit()

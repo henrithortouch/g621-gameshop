@@ -24,6 +24,9 @@
           <p class="game-description">
             {{ game.description }}
           </p>
+          <p>
+            Genre: {{ game.genre }}
+          </p>
           <form action="/gamescreen/{{ game.id }}/">
             <input class="play-now-button" type="submit" value="Play now!" />
           </form>

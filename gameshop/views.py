@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import loader, Context
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django import forms
 
 from gameshop.forms import CustomSignUpForm, SubmitGameForm
@@ -36,8 +36,6 @@ def getGame(game_id):
     except Game.DoesNotExist:
         return None
 
-
-
 def about(request):
     return HttpResponse("about page")
 
@@ -64,9 +62,12 @@ def register(request):
         form = CustomSignUpForm()
     return render(request, "gameshop/authentication/register.html", {"form": form})
 
-def shop(request):
+def shop(request, genre=None):
     template = loader.get_template("gameshop/shop.html")
-    games = Game.objects.all()
+    if genre:
+        games = Game.objects.filter(genre=genre)
+    else:
+        games = Game.objects.all()
 
     if not request.user.is_anonymous:
         profile = profile = Profile.objects.get(user = request.user)
@@ -107,46 +108,44 @@ def studio(request):
 
 @login_required(login_url='/login/')
 def editgame(request, game_id=None):
+    context = getUserContext(request.user)
+    
     if request.method == "DELETE":
-        context = getUserContext(request.user)
-        game = getGame(game_id)
-        if game:
-            if context["developer"].owns(game):
-                game.delete()
-                return redirect("/studio/")
-            else:
-                return Unauthorized()
+        game = get_object_or_404(Game, pk=game_id)
+        if context["developer"].owns(game):
+            game.delete()
+            return redirect("/studio/")
         else:
-            return Http404()
+            return Unauthorized()
 
     if request.method == "POST":
         form = SubmitGameForm(request.POST)
-        context = getUserContext(request.user)
 
         if form.is_valid() and context["developer"]:
             name = form.cleaned_data.get('name')
             description = form.cleaned_data.get('description')
+            genre = form.cleaned_data.get('genre')
             price = form.cleaned_data.get("price")
             url = form.cleaned_data.get("url")
 
             if game_id:
-                game = getGame(game_id)
-                if game:
-                    if context["developer"].owns(game):
-                        game.name = name
-                        game.description = description
-                        game.price = price
-                        game.url = url
-                        game.save()
-                    else:
-                        return Unauthorized()
+                game = get_object_or_404(Game, pk=game_id)
+                
+                if context["developer"].owns(game):
+                    game.name = name
+                    game.description = description
+                    game.genre = genre
+                    game.price = price
+                    game.url = url
+                    game.save()
                 else:
-                    return Http404("Specified game was not found")
+                    return Unauthorized()
             else:
                 game = Game.objects.create(
                     name=name, 
-                    description=description, 
-                    price=price, 
+                    description=description,
+                    genre=genre, 
+                    price=price,
                     url=url, 
                     owner=context["developer"])
                 game.save()
@@ -156,47 +155,30 @@ def editgame(request, game_id=None):
 
     template = "gameshop/inventory/editgame.html"
     game = getGame(game_id)
-    context = getUserContext(request.user)
     
     if context["developer"]:
-        if game:
+        if game: #If modifying an existing game
             if context["developer"].owns(game):
-                if request.method == "POST":
-                    return Http404()
-                else:
-                    form = SubmitGameForm()
-                    form.fields["name"].initial = game.name
-                    form.fields["description"].initial = game.description
-                    form.fields["price"].initial = game.price
-                    form.fields["url"].initial = game.url
-                    context["game"] = game
-                    context["form"] = form
-                return render(request, template, context)
+                form = SubmitGameForm()
+                form.fields["name"].initial = game.name
+                form.fields["description"].initial = game.description
+                form.fields["genre"].initial = game.genre
+                form.fields["price"].initial = game.price
+                form.fields["url"].initial = game.url
+                context["game"] = game
+                context["form"] = form
+            return render(request, template, context)
         else:
             form = SubmitGameForm()
             context["form"] = form
             return render(request, template, context)
-    else:
-        return Http404()
     
-    return Http401("Unauthorized. You do not own this game.")
+    return Http404()
 
 #@login_required(login_url='/login/')
 def logout_page(request):
     logout(request)
     return render(request, "gameshop/authentication/logout_page.html")
-
-def games(request):
-    context = getUserContext(request.user)
-
-    if request.method == "GET" and request.is_ajax():
-        all_games = Game.objects.exclude(bought__user = request.user)
-        return render(request, "gameshop/inventory/game_list.html", {"games": all_games, "text": "text"})
-    elif request.method == "ADD_MONEY" and request.is_ajax():
-        amount = 20
-        profile.addMoney(amount)
-        return HttpResponse(amount, content_type="text/plain")
-    return render(request, "gameshop/games.html", context)
 
 def buy(request):
     data = dict(request.GET)

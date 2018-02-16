@@ -19,9 +19,10 @@ class CustomSignUpForm(UserCreationForm):
 class SubmitGameForm(forms.Form):
     name = forms.CharField(max_length=50, required=True)
     description = forms.CharField(max_length=500, required=True)
+    genre = forms.CharField(max_length=20, required=True)
     price = forms.IntegerField(required=True)
     url = forms.CharField(max_length=200, required=True)
 
     class Meta:
         model = Game
-        fields = ('name', 'description', 'price', 'url')
+        fields = ('name', 'description', 'genre', 'price', 'url')
