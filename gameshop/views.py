@@ -129,7 +129,7 @@ def editgame(request, game_id=None):
                 form.fields["url"].initial = game.url
                 context["game"] = game
                 context["form"] = form
-            return render(request, template, context)
+                return render(request, template, context)
         else: #If adding new game, blank form
             form = SubmitGameForm()
             context["form"] = form
