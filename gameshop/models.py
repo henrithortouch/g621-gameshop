@@ -7,6 +7,7 @@ import random, json
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    link = models.Charfield(max_length=50)
 
     def gamesBought(self):
         return Game.objects.filter(bought=self).all()
@@ -24,6 +25,10 @@ class Profile(models.Model):
     def addGame(self, game):
         self.games_bought.add(game)
         game.addSale()
+        self.save()
+
+    def setLink(self, link):
+        self.link = link
         self.save()
 
     def __str__(self):

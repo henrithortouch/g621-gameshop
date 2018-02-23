@@ -29,10 +29,21 @@ def register(request):
     if request.method == "POST":
         form = CustomSignUpForm(request.POST)
         if form.is_valid():
-            form.save()
+            new_user = form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
+            
+            secret_key = "b66ccbf0dee582e71d4e80553d361ee2"
+            # sys.maxsize?
+            pid = random.SystemRandom().randint(0, 100000)
+            checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, "g621", new_user.id, secret_key)
+            m = md5(checksumstr.encode("ascii"))
+            checksum = m.hexdigest()
+            
+            profile = Profile.objects.filter(id = new_user.id)
+            profile.setLink(checksum)
+
             if form.cleaned_data.get("usertype"):
                 dev = Developer.objects.create(profile=user.profile, studioname="Unset")
                 dev.save()
@@ -41,6 +52,11 @@ def register(request):
     else:
         form = CustomSignUpForm()
     return render(request, "gameshop/authentication/register.html", {"form": form})
+
+def activate(request, activation_link):
+    data = getUserContext(request.user)
+    return render(request, "gameshop/authentication/activate.html", data)
+
 
 def shop(request, genre=None):
     template = loader.get_template("gameshop/shop.html")

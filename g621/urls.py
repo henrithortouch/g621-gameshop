@@ -25,6 +25,7 @@ urlpatterns = [
     url('admin/', admin.site.urls),
     url(r'^$', home, name="home"),
     url(r'^about/$', about),
+    path('activate/<str: activation_link>', activate),
     url(r'^register/$', register),
     url(r'^login/$', auth_views.login, {'template_name': 'gameshop/authentication/login.html'}),
     url(r'^logout/$',logout_page),
