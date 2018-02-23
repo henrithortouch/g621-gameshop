@@ -7,6 +7,7 @@ import random, json
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    activated = models.BooleanField(default=False)
     link = models.Charfield(max_length=50)
 
     def gamesBought(self):
@@ -25,6 +26,10 @@ class Profile(models.Model):
     def addGame(self, game):
         self.games_bought.add(game)
         game.addSale()
+        self.save()
+
+    def activate(self):
+        self.activated = True
         self.save()
 
     def setLink(self, link):
