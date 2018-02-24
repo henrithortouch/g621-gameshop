@@ -50,15 +50,15 @@ def shop(request, genre=None):
     else:
         games = Game.objects.all()
 
-    if not request.user.is_anonymous:
-        profile = profile = Profile.objects.get(user = request.user)
-        gamelist = map(lambda x: (x, profile.hasBought(x)), games)
-    else:
+    if request.user.is_anonymous:
         profile = None
         gamelist = map(lambda x: (x, False), games)
+    else:
+        profile = profile = Profile.objects.get(user = request.user)
+        gamelist = map(lambda x: (x, profile.hasBought(x)), games)
 
     context = getUserContext(request.user)
-    context["gamelist"] = gamelist
+    context["gamelist"] = gamelist # List[Tuple] (Game, UserHasThatGame)
     context["genres"] = Genre.objects.all()
     
     return HttpResponse(template.render(context))
@@ -104,12 +104,13 @@ def editgame(request, game_id=None):
             return redirect("/studio/")
         else:
             return Unauthorized()
+
     elif request.method == "POST":
         form = SubmitGameForm(request.POST)
 
         if form.is_valid():
             if game_id:
-                modifyGameIfAuthorized(game_id, form)
+                modifyGameIfAuthorized(game_id, form, context["developer"])
             else:
                 createGame(form, context["developer"])
 

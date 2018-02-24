@@ -31,10 +31,10 @@ def getHighScores(game):
     highscores = map(lambda x: (x.profile.user.username, x.submitted_score), states)
     return highscores
 
-def modifyGameIfAuthorized(game_id, form):
+def modifyGameIfAuthorized(game_id, form, developer):
     game = get_object_or_404(Game, pk=game_id)
 
-    if not context["developer"].owns(game):
+    if not developer.owns(game):
         return Unauthorized()
 
     game.name = form.cleaned_data.get('name')
@@ -47,10 +47,10 @@ def modifyGameIfAuthorized(game_id, form):
 
 def createGame(form, developer):
     game = Game.objects.create(
-                    name=name, 
-                    description=description,
-                    genre=genre, 
-                    price=price,
-                    url=url, 
+                    name=form.cleaned_data.get('name'), 
+                    description=form.cleaned_data.get('description'),
+                    genre=form.cleaned_data.get('genre'), 
+                    price=form.cleaned_data.get('price'),
+                    url=form.cleaned_data.get('url'), 
                     owner=developer)
     game.save()
