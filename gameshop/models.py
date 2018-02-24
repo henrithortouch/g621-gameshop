@@ -23,11 +23,6 @@ class Profile(models.Model):
         else:
             return False
 
-    def addGame(self, game):
-        self.games_bought.add(game)
-        game.addSale()
-        self.save()
-
     def activate(self):
         self.activated = True
         self.save()
