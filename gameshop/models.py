@@ -7,6 +7,8 @@ import random, json
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    activated = models.BooleanField(default=False)
+    link = models.CharField(max_length=50, default='')
 
     def gamesBought(self):
         return Game.objects.filter(bought=self).all()
@@ -26,8 +28,16 @@ class Profile(models.Model):
         game.addSale()
         self.save()
 
+    def activate(self):
+        self.activated = True
+        self.save()
+
+    def setLink(self, link):
+        self.link = link
+        self.save()
+
     def __str__(self):
-        return "\nUsername: " +self.user.username
+        return "\nUsername: " + self.user.username + "\nActivated: " + str(self.activated)
 
 class Genre(models.Model):
     name = models.CharField(max_length=20)

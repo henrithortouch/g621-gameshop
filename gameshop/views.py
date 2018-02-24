@@ -6,12 +6,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django import forms
+from django.core.mail import send_mail
 
 from gameshop.forms import CustomSignUpForm, SubmitGameForm
 from gameshop.models import Game, Developer, Profile, Game_state, Payment, Genre
-from gameshop.helpers import getUserContext, getGame, getGenre, getHighScores
+from gameshop.helpers import getUserContext, getGame, getGenre, getHighScores, modifyGameIfAuthorized, createGame
 
-import json
+import random,json
 from hashlib import md5
 
 def about(request):
@@ -29,10 +30,32 @@ def register(request):
     if request.method == "POST":
         form = CustomSignUpForm(request.POST)
         if form.is_valid():
-            form.save()
+            new_user = form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
+            email = form.cleaned_data.get('email')
             user = authenticate(username=username, password=raw_password)
+            
+            secret_key = "b66ccbf0dee582e71d4e80553d361ee2"
+            # sys.maxsize?
+            pid = random.SystemRandom().randint(0, 100000)
+            checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, "g621", new_user.id, secret_key)
+            m = md5(checksumstr.encode("ascii"))
+            checksum = m.hexdigest()
+            print(checksum)
+            
+            profile = Profile.objects.get(user__id = new_user.id)
+            print(profile)
+            profile.setLink(checksum)
+            
+            send_mail(
+                'Activate your account at G621',
+                'Click this link to activate your account: <a href="localhost:8000/activate/' + checksum + """/" />""",
+                'no-reply@g621.com',
+                [str(email)],
+                fail_silently=False,
+            )
+
             if form.cleaned_data.get("usertype"):
                 dev = Developer.objects.create(profile=user.profile, studioname="Unset")
                 dev.save()
@@ -42,6 +65,22 @@ def register(request):
         form = CustomSignUpForm()
     return render(request, "gameshop/authentication/register.html", {"form": form})
 
+def activate(request, activation_link):
+    template = loader.get_template("gameshop/authentication/activate.html")
+    context = getUserContext(request.user)
+    context["bool"] = False
+    try: 
+        profile = Profile.objects.get(link = activation_link)
+    except Profile.DoesNotExist:
+        profile = None
+    if not profile == None:
+        profile.activate()
+        context["bool"] = True
+    print(profile)
+    context["profile"] = profile
+    return HttpResponse(template.render(context))
+
+
 def shop(request, genre=None):
     template = loader.get_template("gameshop/shop.html")
     if genre:
@@ -50,15 +89,15 @@ def shop(request, genre=None):
     else:
         games = Game.objects.all()
 
-    if not request.user.is_anonymous:
-        profile = profile = Profile.objects.get(user = request.user)
-        gamelist = map(lambda x: (x, profile.hasBought(x)), games)
-    else:
+    if request.user.is_anonymous:
         profile = None
         gamelist = map(lambda x: (x, False), games)
+    else:
+        profile = profile = Profile.objects.get(user = request.user)
+        gamelist = map(lambda x: (x, profile.hasBought(x)), games)
 
     context = getUserContext(request.user)
-    context["gamelist"] = gamelist
+    context["gamelist"] = gamelist # List[Tuple] (Game, UserHasThatGame)
     context["genres"] = Genre.objects.all()
     
     return HttpResponse(template.render(context))
@@ -94,7 +133,9 @@ def studio(request):
 @login_required(login_url='/login/')
 def editgame(request, game_id=None):
     context = getUserContext(request.user)
-    
+    if not context['developer']:
+        redirect('/login/')
+
     if request.method == "DELETE":
         game = get_object_or_404(Game, pk=game_id)
         if context["developer"].owns(game):
@@ -102,60 +143,37 @@ def editgame(request, game_id=None):
             return redirect("/studio/")
         else:
             return Unauthorized()
+
     elif request.method == "POST":
         form = SubmitGameForm(request.POST)
 
-        if form.is_valid() and context["developer"]:
-            name = form.cleaned_data.get('name')
-            description = form.cleaned_data.get('description')
-            genre = getGenre(form.cleaned_data.get('genre'))
-            price = form.cleaned_data.get("price")
-            url = form.cleaned_data.get("url")
-
+        if form.is_valid():
             if game_id:
-                game = get_object_or_404(Game, pk=game_id)
-                
-                if context["developer"].owns(game):
-                    game.name = name
-                    game.description = description
-                    game.genre = genre
-                    game.price = price
-                    game.url = url
-                    game.save()
-                else:
-                    return Unauthorized()
+                modifyGameIfAuthorized(game_id, form, context["developer"])
             else:
-                game = Game.objects.create(
-                    name=name, 
-                    description=description,
-                    genre=genre, 
-                    price=price,
-                    url=url, 
-                    owner=context["developer"])
-                game.save()
-            return redirect('/studio/')
-        else:
-            return redirect('/studio/')
+                createGame(form, context["developer"])
+
+        return redirect('/studio/')
+
     elif request.method == "GET":
         template = "gameshop/inventory/edit_game.html"
         game = getGame(game_id)
         
-        if context["developer"]:
-            if game: #If modifying an existing game
-                if context["developer"].owns(game):
-                    form = SubmitGameForm()
-                    form.fields["name"].initial = game.name
-                    form.fields["description"].initial = game.description
-                    form.fields["genre"].initial = game.genre
-                    form.fields["price"].initial = game.price
-                    form.fields["url"].initial = game.url
-                    context["game"] = game
-                    context["form"] = form
-                return render(request, template, context)
-            else:
+        if game: #Form has data if modifying existing game
+            if context["developer"].owns(game):
                 form = SubmitGameForm()
+                form.fields["name"].initial = game.name
+                form.fields["description"].initial = game.description
+                form.fields["genre"].initial = game.genre
+                form.fields["price"].initial = game.price
+                form.fields["url"].initial = game.url
+                context["game"] = game
                 context["form"] = form
                 return render(request, template, context)
+        else: #If adding new game, blank form
+            form = SubmitGameForm()
+            context["form"] = form
+            return render(request, template, context)
     
     return Http404()
 
