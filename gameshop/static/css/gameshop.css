@@ -1,23 +1,26 @@
 :root {
-    --bg: #335E96;
-    --title-bg: #262626;
+    --page-bg: #335E96;
+    --page-header-bg: #262626;
+    --page-header-txt: #FFFFFF;
     --header-bg: #6084B3;
 
 
     --text: #80D8FF;
-    --link: #F1F739;/* #FFEA00;*/
+    --link: #F1F739;
     --head: #B86C42;
 
     --store-block-bg: #3E5573;
     --store-block-border: #FFFFFF;
     
+    --shop-buy-button: #FFFFFF;
+
     --disabled: #727984;
     --disabled-bg: #c7c8c9;
     
-    --buy: #3a6041;
-    --buy-bg: #06cc2d;
+    --buy-button-txt: #3a6041;
+    --buy-button-bg: #06cc2d;
 
-    --play-bg: #034da8;
+    --play-button-bg: #034da8;
 }   
 
 input, select, textarea, .submit{
@@ -26,22 +29,22 @@ input, select, textarea, .submit{
 
 /* Headers */
 .page-header {
-    background-color: var(--title-bg);
+    background-color: var(--page-header-bg);
     margin: 0;
     padding: 15px 15px 15px 20px;
 }
 
+h1, h2, h3, h4, h5, h6, h7 {
+    color: var(--head);
+    margin-top: 0;
+}
+
 .page-header h1, .page-header h1 a, .page-header h1 a:visited, .page-header h1 a:active {
-    color: #ffffff;
+    color: var(--page-header-txt);
     font-size: 40pt;
     font-weight: 900;
     margin-top: 10px;
     margin-bottom: 10px;
-}
-
-h2, h3, h4, h5, h6, h7 {
-    color: var(--head);
-    margin-top: 0;
 }
 
 .footer {
@@ -59,22 +62,17 @@ h2, h3, h4, h5, h6, h7 {
     display: inline-table;
 }
 
-.play-now-button, .submit-game {
+.play-now-button, .submit-game, .shop_buy {
     background-color: var(--head);
-    color: white;
+    color: var(--shop-buy-button);
     display: inline-block;
     text-decoration: none;
     padding: 8px 16px;
-    border: solid 1px white;
+    border: solid 1px var(--shop-buy-button);
 }
 
 .shop_buy {
-    background-color: var(--title-bg);
-    color: white;
-    display: inline-block;
-    text-decoration: none;
-    padding: 8px 16px;
-    border: solid 1px white;
+    background-color: var(--page-header-bg);
 }
 
 a {
@@ -86,7 +84,7 @@ form {
 }
 
 body {
-    background-color: var(--bg);
+    background-color: var(--page-bg);
     padding: 0;
     color: var(--text);
 }
@@ -138,28 +136,27 @@ body {
     display: inline-block;
     text-decoration: none;
     text-align: center;
-    color: var(--buy);
-    background-color: var(--buy-bg);
+    color: var(--buy-button-txt);
+    background-color: var(--buy-button-bg);
     width: 100px;
     border-radius: 8px;
     padding-top: 0px;
     padding-bottom: 4px;
-    border: solid 1px white;
+    border: solid 1px var(--shop-buy-button);
 }
 
 .play-now-button {
-    background-color: var(--play-bg);
-    color: white;
+    background-color: var(--play-button-bg);
+    color: var(--shop-buy-button);
     display: inline-block;
     text-decoration: none;
     padding-top: 0px;
     padding-bottom: 4px;
-    border: solid 1px white;
+    border: solid 1px var(--shop-buy-button);
     border-radius: 12px;
     width:110px;
 }
 
 .field_help_text {
-    /*color: var(--head);*/
     font-size: 10pt;
 }

@@ -23,9 +23,9 @@
 {% endblock %}
 
 {% block content %}
-{% csrf_token %}
-{% if profile is False %}
-<div class="login_prompt"><small><a href="/login/">Sign in</a> to purchase games</small></div>
+  {% csrf_token %}
+  {% if profile is False %}
+    <div class="login_prompt"><small><a href="/login/">Sign in</a> to purchase games</small></div>
 {% endif %}
 
 {% include "gameshop/inventory/genre_list.html" %}
