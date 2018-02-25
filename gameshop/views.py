@@ -261,7 +261,7 @@ def machine_load(request, game_id=None):
     if data[1] == 'NOSAVE':
         return HttpResponse("No valid save detected", status=204)
     
-    if data[1] is not None:
+    if data[1]:
         response = {
             'score': data[0],
             'playerItems': json.loads(data[1]),
@@ -269,7 +269,8 @@ def machine_load(request, game_id=None):
     else:
         response = {
             'score': data[0],
-            'playerItems': ''
+            'playerItems': [],
         }
 
+    print(response)
     return HttpResponse(json.dumps(response), status=200)
