@@ -1,6 +1,3 @@
-function joo() {
-    console.log("que");
-}
 function buy(id) {
     $.ajax({
         type: "GET",
@@ -23,11 +20,10 @@ function buy(id) {
             var checksum = form.find("input[name=checksum]");
             checksum.val(data["checksum"]);
 
-            var path = String(window.location);
-            var homepath = path.substring(0, (path.length - 5))
-            var success_path = homepath.concat("payment/success/");
-            var cancel_path = homepath.concat("payment/cancel/");
-            var error_path = homepath.concat("payment/error/");
+            var homepath = window.location.origin;
+            var success_path = homepath.concat("/payment/success/");
+            var cancel_path = homepath.concat("/payment/cancel/");
+            var error_path = homepath.concat("/payment/error/");
             
             form.find("input[name=success_url]").val(success_path);
             form.find("input[name=cancel_url]").val(cancel_path);
