@@ -1,7 +1,6 @@
 from gameshop.models import Game, Profile, Developer, Genre, Game_state
 from django.shortcuts import get_object_or_404
 
-
 def getUserContext(user):
     if not user or user.is_anonymous:
         return { "profile": None, "developer": None }
