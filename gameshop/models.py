@@ -5,6 +5,8 @@ from django.dispatch import receiver
 from hashlib import md5
 import random, json
 
+from gameshop.validation import getChecksum
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     activated = models.BooleanField(default=False)

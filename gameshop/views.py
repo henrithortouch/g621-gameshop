@@ -10,8 +10,9 @@ from django.core.mail import send_mail
 
 from gameshop.forms import CustomSignUpForm, SubmitGameForm
 from gameshop.models import Game, Developer, Profile, Game_state, Payment, Genre
-from gameshop.helpers import getUserContext, getGame, getGenre, getHighScores, modifyGameIfAuthorized, createGame
-
+from gameshop.helpers import getUserContext, getGame, getGenre, \
+    getHighScores, modifyGameIfAuthorized, createGame
+from gameshop.validation import getPID, getChecksum, checkValidity
 import random,json
 from hashlib import md5
 
@@ -42,10 +43,8 @@ def register(request):
             checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, "g621", new_user.id, secret_key)
             m = md5(checksumstr.encode("ascii"))
             checksum = m.hexdigest()
-            print(checksum)
             
             profile = Profile.objects.get(user__id = new_user.id)
-            print(profile)
             profile.setLink(checksum)
             
             send_mail(
@@ -68,15 +67,12 @@ def register(request):
 def activate(request, activation_link):
     template = loader.get_template("gameshop/authentication/activate.html")
     context = getUserContext(request.user)
-    context["bool"] = False
     try: 
         profile = Profile.objects.get(link = activation_link)
+        profile.activate()
     except Profile.DoesNotExist:
         profile = None
-    if not profile == None:
-        profile.activate()
-        context["bool"] = True
-    print(profile)
+
     context["profile"] = profile
     return HttpResponse(template.render(context))
 
@@ -192,7 +188,7 @@ def buy(request):
         game = Game.objects.filter(id = game_id)[0]
         checksum = game.createChecksum()
         json_data = json.loads(checksum)
-        pid = checksum.split(",")[1].split(":")[1].strip()
+        pid = getPID(checksum)
         request.session[str(pid)] = game_id
         payment = Payment(game_id = game_id, pid = pid)
         payment.save()
@@ -204,70 +200,48 @@ def buy(request):
 # the 'Simple Payments' verification phase. Three different outcomes produce their
 # respectable views. 
 def payment(request):
-    secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
-    data = dict(request.GET)
-    pid = data["pid"][0]
-    ref = data["ref"][0]
-    result = data["result"][0]
-    checksumstr = "pid={}&ref={}&result={}&token={}".format(pid, ref, result, secret_key)
-    m = md5(checksumstr.encode("ascii"))
-    checksum = m.hexdigest()
-    validate_checksum = data["checksum"][0] #Checksum received from the request
-    validation = False
-    if validate_checksum == checksum:
-        validation = True
+    context = getUserContext(request.user)
+
+    validation = checkValidity(dict(request.GET))
+
     if result == "success" and validation:
         game_id = request.session.get(str(pid))
-        try:
-            game = Game.objects.get(id = game_id)
-        except Game.DoesNotExist:
-            return Http404
-        profile = Profile.objects.filter(user = request.user)[0]
-        if not profile.hasBought(game): #At this stage we do not support purchasing multiple copies
+        game = get_object_or_404(Game, id=game_id)
+
+        if not context["profile"].hasBought(game): #At this stage we do not support purchasing multiple copies
             game.addOwner(profile)
             game.addSale()
 
             payment = Payment.objects.filter(pid = pid)
             game_id = payment[0].game_id
-            game = Game.objects.get(id = game_id)
-            #profile.reduceMoney!!!
         return render(request, "gameshop/payment/payment_success.html", {"game": game})
     elif result == "cancel" and validation:
         game_id = request.session["game_id"] = None
-        #print(game_id)
         return render(request, "gameshop/payment/payment_cancel.html")
     else:
         game_id = request.session["game_id"] = None
-        #print(game_id)
         return render(request, "gameshop/payment/payment_error.html")
 
-# Handlers for game Save, Score, Load requests
 @login_required(login_url='/login/')
 def machine_save(request, game_id=None):
     data = dict(request.POST)
-    #TODO: Make items a optional parameter to save
     try:
-        try:
-            items = data['playerItems[]']
-            #Convert items to JSON string
-            items_json = json.dumps(items)
-        except KeyError:
-            #No items given in request so make it none
-            items_json = None
+        items = data['playerItems[]']
+        items_json = json.dumps(items)
+    except KeyError:
+        items_json = None
 
+    try:
         score = data['score'][0]
-        game = Game.objects.get(id = game_id)
-        profile = Profile.objects.get(user = request.user)
-        state = Game_state.objects.get(profile = profile, game = game)
-        state.save_state(score = score, items = items_json)
     except KeyError:
         return HttpResponse('No post data', status=400)
-    except Game.DoesNotExist:
-        return HttpResponse('Game not found',status=500)
-    except Profile.DoesNotExist:
-        return HttpResponse('User not found',status=500)
-    except Game_state.DoesNotExist:
-        return HttpResponse('Game state not found',status=500)
+
+    game =  get_object_or_404(Game, id=game_id)
+    profile = get_object_or_404(Profile, user = request.user)
+    state = get_object_or_404(Game_state, profile = profile, game = game)
+
+    state.save_state(score = score, items = items_json)
+
     return HttpResponse('OK', status=200)
 
 
@@ -276,42 +250,26 @@ def machine_score(request, game_id=None):
     data = dict(request.POST)
     try:
         score = data['score'][0]
-        game = Game.objects.get(id = game_id)
-        profile = Profile.objects.get(user = request.user)
-        state = Game_state.objects.get(profile = profile, game = game)
-        state.submit_score(score = score)
     except KeyError:
         return HttpResponse('No post data', status=400)
-    except Game.DoesNotExist:
-        return HttpResponse('Game not found',status=500)
-    except Profile.DoesNotExist:
-        return HttpResponse('User not found',status=500)
-    except Game_state.DoesNotExist:
-        return HttpResponse('Game state not found',status=500)
+
+    game =  get_object_or_404(Game, id=game_id)
+    profile = get_object_or_404(Profile, user = request.user)
+    state = get_object_or_404(Game_state, profile = profile, game = game)
+    state.submit_score(score = score)
+
     return HttpResponse('OK', status=200)
 
 
 @login_required(login_url='/login/')
 def machine_load(request, game_id=None):
-    try:
-        #TODO: Make items a optional parameter
-        game = Game.objects.get(id = game_id)
-        profile = Profile.objects.get(user = request.user)
-        state = Game_state.objects.get(profile = profile, game = game)
-        data = state.load_state()
-        if data[1] == 'NOSAVE':
-            print("NOTHING SAVED")
-            return HttpResponse("No valid save detected", status=204)
-    except KeyError:
-        return HttpResponse('No post data', status=400)
-    except Game.DoesNotExist:
-        return HttpResponse('Game not found',status=500)
-    except Profile.DoesNotExist:
-        return HttpResponse('User not found',status=500)
-    except Game_state.DoesNotExist:
-        return HttpResponse('Game state not found',status=500)
+    game =  get_object_or_404(Game, id=game_id)
+    profile = get_object_or_404(Profile, user = request.user)
+    state = get_object_or_404(Game_state, profile = profile, game = game)
+    data = state.load_state()
+    if data[1] == 'NOSAVE':
+        return HttpResponse("No valid save detected", status=204)
     
-    #Convert JSON string items to objects
     if data[1] is not None:
         response = {
             'score': data[0],
