@@ -144,4 +144,6 @@ LOGIN_REDIRECT_URL = '/'
 #Email verification
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+CSRF_COOKIE_SECURE = True
+
 ADMINS = [('hans', 'hansen.feng@aalto.fi')]
