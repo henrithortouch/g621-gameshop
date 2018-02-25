@@ -15,7 +15,7 @@
       G621 Game Store
     </h1>
     {% if not profile %}
-    <a href="/login">
+    <a href="/login/">
       Please log in to buy games!
     </a>
     {% endif %}
@@ -57,11 +57,11 @@
           <input type="hidden" name="pid" value=""/>
           <input type="hidden" name="sid" value="G621" />
           <input type="hidden" name="success_url"
-              value="http://localhost:8000/payment/success" />
+              value="http://localhost:8000/payment/success/" />
           <input type="hidden" name="cancel_url"
-              value="http://localhost:8000/payment/cancel" />
+              value="http://localhost:8000/payment/cancel/" />
           <input type="hidden" name="error_url"
-              value="http://localhost:8000/payment/error" />
+              value="http://localhost:8000/payment/error/" />
           <input type="hidden" name="checksum"
               value="" />
           <input type="hidden" id="id_amount" name="amount" value="{{game.price}}" />
