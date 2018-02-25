@@ -1,6 +1,3 @@
-function joo() {
-    console.log("que");
-}
 function buy(id) {
     $.ajax({
         type: "GET",

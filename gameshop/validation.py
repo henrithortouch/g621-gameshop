@@ -11,6 +11,12 @@ def getChecksum(pid, ref, result):
     checksum = m.hexdigest()
     return checksum
 
+def getChecksum2(pid, amount):
+    checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, "G621", amount, secret_key)
+    m = md5(checksumstr.encode("ascii"))
+    checksum = m.hexdigest()
+    return checksum
+
 def checkValidity(data):
     pid = data["pid"][0]
     ref = data["ref"][0]

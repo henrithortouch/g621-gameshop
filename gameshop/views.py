@@ -12,8 +12,8 @@ from gameshop.forms import CustomSignUpForm, SubmitGameForm
 from gameshop.models import Game, Developer, Profile, Game_state, Payment, Genre
 from gameshop.helpers import getUserContext, getGame, getGenre, \
     getHighScores, modifyGameIfAuthorized, createGame
-from gameshop.validation import getPID, getChecksum, checkValidity
-import random,json
+from gameshop.validation import getPID, getChecksum, getChecksum2, checkValidity
+import random,json, sys
 from hashlib import md5
 
 def about(request):
@@ -37,12 +37,8 @@ def register(request):
             email = form.cleaned_data.get('email')
             user = authenticate(username=username, password=raw_password)
             
-            secret_key = "b66ccbf0dee582e71d4e80553d361ee2"
-            # sys.maxsize?
             pid = random.SystemRandom().randint(0, 100000)
-            checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, "g621", new_user.id, secret_key)
-            m = md5(checksumstr.encode("ascii"))
-            checksum = m.hexdigest()
+            checksum = getChecksum2(pid, new_user.id)
             
             profile = Profile.objects.get(user__id = new_user.id)
             profile.setLink(checksum)
@@ -184,42 +180,37 @@ def logout_page(request):
 def buy(request):
     data = dict(request.GET)
     game_id = data["game_id"][0]
-    try:
-        game = Game.objects.filter(id = game_id)[0]
-        checksum = game.createChecksum()
-        json_data = json.loads(checksum)
-        pid = getPID(checksum)
-        request.session[str(pid)] = game_id
-        payment = Payment(game_id = game_id, pid = pid)
-        payment.save()
-        return JsonResponse(json_data)
-    except Game.DoesNotExist:
-        return Http404
+
+    game = get_object_or_404(Game, id=game_id)
+    checksum = game.createChecksum()
+    json_data = json.loads(checksum)
+    pid = getPID(checksum)
+    request.session[str(pid)] = game_id
+    payment = Payment(game_id = game_id, pid = pid)
+    payment.save()
+    return JsonResponse(json_data)
+
 
 # A view for processing the outcome of the payment process, given that it has passed
 # the 'Simple Payments' verification phase. Three different outcomes produce their
 # respectable views. 
 def payment(request):
-    context = getUserContext(request.user)
+    profile = get_object_or_404(Profile, user=request.user)
 
+    result = dict(request.GET)["result"][0]
     validation = checkValidity(dict(request.GET))
 
     if result == "success" and validation:
-        game_id = request.session.get(str(pid))
+        game_id = get_object_or_404(Payment, pid=dict(request.GET)["pid"][0]).game_id
         game = get_object_or_404(Game, id=game_id)
 
-        if not context["profile"].hasBought(game): #At this stage we do not support purchasing multiple copies
+        if not profile.hasBought(game): #At this stage we do not support purchasing multiple copies
             game.addOwner(profile)
             game.addSale()
-
-            payment = Payment.objects.filter(pid = pid)
-            game_id = payment[0].game_id
         return render(request, "gameshop/payment/payment_success.html", {"game": game})
     elif result == "cancel" and validation:
-        game_id = request.session["game_id"] = None
         return render(request, "gameshop/payment/payment_cancel.html")
     else:
-        game_id = request.session["game_id"] = None
         return render(request, "gameshop/payment/payment_error.html")
 
 @login_required(login_url='/login/')

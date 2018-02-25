@@ -3,9 +3,9 @@ from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from hashlib import md5
-import random, json
+import random, json, sys
 
-from gameshop.validation import getChecksum
+from gameshop.validation import getChecksum2
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -75,12 +75,8 @@ class Game(models.Model):
         state.save()
 
     def createChecksum(self):
-        secret_key = "b66ccbf9dee582e74d4e80553d361ee2"
-        # sys.maxsize?
         pid = random.SystemRandom().randint(0, 100000)
-        checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, "G621", self.price, secret_key)
-        m = md5(checksumstr.encode("ascii"))
-        checksum = m.hexdigest()
+        checksum = getChecksum2(pid, self.price)
         result = """{"%s": "%s", "%s": %s, "%s": "%s"}""" % ("checksum", checksum, "pid", pid, "name", self.name)
         return result
 
