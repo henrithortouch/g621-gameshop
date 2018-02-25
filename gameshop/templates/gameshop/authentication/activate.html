@@ -1,0 +1,23 @@
+{% extends "gameshop/generic.html" %}
+
+{% block script %}
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'css/authentication.css' %}">
+{% endblock %}
+
+{% block title %}G621 - Activate Your Account{% endblock %}
+
+{% block pageHeader %}
+  <div class="page-header">
+    <h1>Account Activation</h1>
+  </div>
+{% endblock %}
+
+{% block content %}
+    {% if profile.activated %}
+        Your account has been activated / is active!
+    {% else %}
+        Account with this activation link was not found
+    {% endif %}
+  
+{% endblock %}

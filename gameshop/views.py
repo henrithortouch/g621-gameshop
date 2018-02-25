@@ -6,12 +6,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django import forms
+from django.core.mail import send_mail
 
 from gameshop.forms import CustomSignUpForm, SubmitGameForm
 from gameshop.models import Game, Developer, Profile, Game_state, Payment, Genre
 from gameshop.helpers import getUserContext, getGame, getGenre, getHighScores, modifyGameIfAuthorized, createGame
 
-import json
+import random,json
 from hashlib import md5
 
 def about(request):
@@ -29,10 +30,32 @@ def register(request):
     if request.method == "POST":
         form = CustomSignUpForm(request.POST)
         if form.is_valid():
-            form.save()
+            new_user = form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
+            email = form.cleaned_data.get('email')
             user = authenticate(username=username, password=raw_password)
+            
+            secret_key = "b66ccbf0dee582e71d4e80553d361ee2"
+            # sys.maxsize?
+            pid = random.SystemRandom().randint(0, 100000)
+            checksumstr = "pid={}&sid={}&amount={}&token={}".format(pid, "g621", new_user.id, secret_key)
+            m = md5(checksumstr.encode("ascii"))
+            checksum = m.hexdigest()
+            print(checksum)
+            
+            profile = Profile.objects.get(user__id = new_user.id)
+            print(profile)
+            profile.setLink(checksum)
+            
+            send_mail(
+                'Activate your account at G621',
+                'Click this link to activate your account: <a href="localhost:8000/activate/' + checksum + """/" />""",
+                'no-reply@g621.com',
+                [str(email)],
+                fail_silently=False,
+            )
+
             if form.cleaned_data.get("usertype"):
                 dev = Developer.objects.create(profile=user.profile, studioname="Unset")
                 dev.save()
@@ -41,6 +64,22 @@ def register(request):
     else:
         form = CustomSignUpForm()
     return render(request, "gameshop/authentication/register.html", {"form": form})
+
+def activate(request, activation_link):
+    template = loader.get_template("gameshop/authentication/activate.html")
+    context = getUserContext(request.user)
+    context["bool"] = False
+    try: 
+        profile = Profile.objects.get(link = activation_link)
+    except Profile.DoesNotExist:
+        profile = None
+    if not profile == None:
+        profile.activate()
+        context["bool"] = True
+    print(profile)
+    context["profile"] = profile
+    return HttpResponse(template.render(context))
+
 
 def shop(request, genre=None):
     template = loader.get_template("gameshop/shop.html")
