@@ -22,7 +22,7 @@ urlpatterns = [
     path('studio/<int:game_id>/', editgame),
     path('studio/addgame/', editgame),
     path('studio/', studio),
-    path('inventory', inventory),
+    path('inventory/', inventory),
     url(r'^buy/$', buy),
     url(r'^payment/cancel/$', payment),
     url(r'^payment/error/$', payment),
