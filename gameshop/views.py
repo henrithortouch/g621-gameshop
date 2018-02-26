@@ -42,10 +42,11 @@ def register(request):
             
             profile = Profile.objects.get(user__id = new_user.id)
             profile.setLink(checksum)
-            
+            # Email link for activation is created with md5 hashing to create variance
+            # between different activation links to avoid users activating others accounts
             send_mail(
                 'Activate your account at G621',
-                'Click this link to activate your account: <a href="localhost:8000/activate/' + checksum + """/" />""",
+                'Click this link to activate your account: <a href="g621.herokuapp.com/activate/' + checksum + """/" />""",
                 'no-reply@g621.com',
                 [str(email)],
                 fail_silently=False,
