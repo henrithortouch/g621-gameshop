@@ -6,3 +6,5 @@
 * Henri Thor-Touch **352318**
 
 ### Feature List
+
+We will list our done features here and our self evaluation for them. You will find the features in
