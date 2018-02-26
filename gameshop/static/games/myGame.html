@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body onload="startGame()">
+<script>
+    var gamePiece;
+    var food = [];
+    var scoreText;
+    var score = 0;
+
+    function startGame() {
+        gamePiece = new component(30, 30, "red", 10, 120);
+        gamePiece.gravity = 0.2;
+        scoreText = new component("30px", "Consolas", "black", 280, 40, "text");
+        gameArea.start();
+    }
+
+    var gameArea = {
+        canvas : document.createElement("canvas"),
+        start : function() {
+            this.canvas.width = 500;
+            this.canvas.height = 270;
+            this.context = this.canvas.getContext("2d");
+            document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+            this.frameNo = 0;
+            updateGameArea();
+            },
+        clear : function() {
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+    }
+
+    function component(width, height, color, x, y, type) {
+        this.type = type;
+        this.width = width;
+        this.height = height;
+        this.speedX = 0;
+        this.speedY = 0;    
+        this.x = x;
+        this.y = y;
+        this.gravity = 0;
+        this.gravitySpeed = 0;
+        this.update = function() {
+            ctx = gameArea.context;
+            if (this.type == "text") {
+                ctx.font = this.width + " " + this.height;
+                ctx.fillStyle = color;
+                ctx.fillText(this.text, this.x, this.y);
+            } else {
+                ctx.fillStyle = color;
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
+        this.newPos = function() {
+            this.gravitySpeed += this.gravity;
+            this.x += this.speedX;
+            this.y += this.speedY + this.gravitySpeed;
+            this.hitBottom();
+        }
+        this.hitBottom = function() {
+            var bottom = gameArea.canvas.height - this.height;
+            if (this.y > bottom) {
+                this.y = bottom;
+                this.gravitySpeed = 0;
+            }
+        }
+        this.touchWith = function(otherobj) {
+            var myleft = this.x;
+            var myright = this.x + (this.width);
+            var mytop = this.y;
+            var mybottom = this.y + (this.height);
+            var otherleft = otherobj.x;
+            var otherright = otherobj.x + (otherobj.width);
+            var othertop = otherobj.y;
+            var otherbottom = otherobj.y + (otherobj.height);
+            var touch = true;
+            if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+                touch = false;
+            }
+            return touch;
+        }
+    }
+
+    function updateGameArea() {
+        var x, height, gap, minHeight, maxHeight, minGap, maxGap;
+        for (i = 0; i < food.length; i += 1) {
+            if (gamePiece.touchWith(food[i])) {
+                score += 20
+                food.splice(i,1)
+            } 
+        }
+        gameArea.clear();
+        gameArea.frameNo += 1;
+        if (gameArea.frameNo == 1 || everyinterval(150)) {
+            x = gameArea.canvas.width;
+            maxHeight = gameArea.canvas.height;
+            y = Math.floor(Math.random()* maxHeight)
+            food.push(new component(20, 20, "green", x, y));
+        }
+        for (i = 0; i < food.length; i += 1) {
+            food[i].x += -1;
+            food[i].update();
+        }
+        scoreText.text="SCORE: " + score;
+        scoreText.update();
+        gamePiece.newPos();
+        gamePiece.update();
+    }
+
+    function everyinterval(n) {
+        if ((gameArea.frameNo / n) % 1 == 0) {return true;}
+        return false;
+    }
+
+    function accelerate(n) {
+        if (!gameArea.interval) {gameArea.interval = setInterval(updateGameArea, 20);}
+        gamePiece.gravity = n;
+    }
+</script>
+<br>
+<button onmousedown="accelerate(-0.2)" onmouseup="accelerate(0.05)">ACCELERATE</button>
+<p>Click button to accelerate up</p>
+<p>hit stuff to gain score</p>
+</body>
+</html>
