@@ -131,7 +131,7 @@ In both Heroku and our local Django, our superuser credentials are:
 >Username: admin
 >Password: adminadmin
 
-Our Heroku app's address: [G621 Gameshop](g621.herokuapp.com)
+Our Heroku app's address: [G621 Gameshop](https://g621.herokuapp.com)
 
 In our project, we highly suggest you create your own account instead of using the admin account to get the first time use feeling. 
 * From the **Login** header link, you can register your new account.
