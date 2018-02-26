@@ -84,8 +84,10 @@ In this section, we have identified our done features and associated selfevaluat
   * You are only allowed to modify/add/etc. your own games, and you can only add games to your own inventory.
     * We suggest full points assessment
 5. **Game/service interaction**
-  * HANSEN PLEASE COMMENT
-    * YOUR SUGGESTION FOR POINTS
+  * When player presses submit score button, a message is sent from game to parent window, and parent will send it to server
+  * Correctly records all users highscores, and shows it on the screen where the game is played.
+  * Message is sent from service, but game doesn't do anything with the message
+    * We suggest full points assessment 
 6. **Quality of Work**
   * Our code aims to be as self commenting as possible, however, since our team members come from different coding backgrounds, achieving truly self commenting code is not possible. Therefore, you may find comments in sections that do not provide self commenting attributes.
   * Templates are used effectively in our project. Most of the pages where we define functionality or preview to follow a same suite, we extend a generic.html template that provides us the basic building blocks by using the Django Template Language. For more complex solutions, we wrote them as regular HTML.
@@ -102,11 +104,12 @@ In this section, we have identified our done features and associated selfevaluat
 #### More Features
 
 1. **Save/load and resolution feature**
-  * HANSEN PLEASE COMMENT
-    * YOUR SUGGESTION FOR POINTS
+  * Save and load functions work as they were described in Game Developer Information.
+    * We suggest full points assessment
 2. **Own game**
-  * HANSEN PLEASE COMMENT
-    * YOUR SUGGESTION FOR POINTS
+  * Own game has been made, and it's in gameshop/statick/games/myGame.html
+  * Doesn't support save, load, and score, as it's hosted at niksula and configuring jquery source was bothersome.
+    * We suggest 75 points assesment 
 
 #### Comments about development process
 
